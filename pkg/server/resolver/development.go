@@ -3,8 +3,8 @@ package resolver
 import (
 	"context"
 
-	"github.com/miraikeitai2020/backend-bff-API/pkg/bff"
-	"github.com/miraikeitai2020/backend-bff-API/pkg/server/model"
+	"github.com/miraikeitai2020/backend-bff/pkg/bff"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
 func (r *mutationResolver) AddArticle(ctx context.Context, index *int, article *string) (*model.Article, error) {
