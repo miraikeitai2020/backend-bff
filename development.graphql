@@ -4,12 +4,7 @@ type CityData {
   longitude: Float!
 }
 
-type IsOdd {
-  number: Int!
-  judge: Boolean!
-}
-
-type IsEven {
+type Judge {
   number: Int!
   judge: Boolean!
 }
@@ -20,8 +15,8 @@ type Article {
 }
 
 type Query {
-  odd(number: Int!): IsOdd!
-  even(number: Int!): IsEven!
+  odd(number: Int!): Judge!
+  even(number: Int!): Judge!
   city(id: Int): CityData!
   allCity: [CityData!]!
 }
