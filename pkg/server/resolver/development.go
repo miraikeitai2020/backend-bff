@@ -43,27 +43,27 @@ func (r *mutationResolver) PostUserData(ctx context.Context, emotion float64, ci
 	}, nil
 }
 
-func (r *queryResolver) Odd(ctx context.Context, number int) (*model.IsOdd, error) {
+func (r *queryResolver) Odd(ctx context.Context, number int) (*model.Judge, error) {
 	if number%2 != 1 {
-		return &model.IsOdd {
+		return &model.Judge {
 			Number: number,
 			Judge: false,
 		}, nil
 	}
-	return &model.IsOdd {
+	return &model.Judge {
 		Number: number,
 		Judge: true,
 	}, nil
 }
 
-func (r *queryResolver) Even(ctx context.Context, number int) (*model.IsEven, error) {
+func (r *queryResolver) Even(ctx context.Context, number int) (*model.Judge, error) {
 	if number%2 != 0 {
-		return &model.IsEven {
+		return &model.Judge {
 			Number: number,
 			Judge: false,
 		}, nil
 	}
-	return &model.IsEven {
+	return &model.Judge {
 		Number: number,
 		Judge: true,
 	}, nil

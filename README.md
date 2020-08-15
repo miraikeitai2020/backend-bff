@@ -27,8 +27,8 @@
 #### List Query
 |   Type   |     Name     |            Argument            |    Return    |
 | :------: | :----------: | :----------------------------: |:-----------: |
-| Query    | odd          | number:Int!                    | IsOdd!       |
-| Query    | even         | number:Int!                    | IsEven!      |
+| Query    | odd          | number:Int!                    | Judge!       |
+| Query    | even         | number:Int!                    | Judge!      |
 | Query    | city         | id:Int                         | CityData!    |
 | Query    | allCity      |                                | [CityData!]! |
 | Mutation | addArticle   | index:Int, article: String     | Article!     |
@@ -42,13 +42,7 @@
 | latitude  | Float!  |
 | longitude | Float!  |
 
-**IsOdd**
-|  Name  |   Type   |
-| :----: | :------: |
-| number | Int!     |
-| judge  | Boolean! |
-
-**IsEven**
+**Judge**
 |  Name  |   Type   |
 | :----: | :------: |
 | number | Int!     |
