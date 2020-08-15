@@ -106,19 +106,19 @@ func (r *queryResolver) AllCity(ctx context.Context) ([]*model.CityData, error) 
 			Longitude: 122.5557,
 		},
 		&model.CityData{
-			Name: "東京都　沖ノ鳥島",
-			Latitude: 20.2531,
-			Longitude: 136.0411,
-		},
-		&model.CityData{
-			Name: "東京都　沖ノ鳥島",
-			Latitude: 20.2531,
-			Longitude: 136.0411,
-		},
-		&model.CityData{
 			Name: "東京都　南鳥島",
 			Latitude: 24.1659,
 			Longitude: 153.5912,
+		},
+		&model.CityData{
+			Name: "東京都　沖ノ鳥島",
+			Latitude: 20.2531,
+			Longitude: 136.0411,
+		},
+		&model.CityData{
+			Name: "北海道　択捉島",
+			Latitude: 45.3326,
+			Longitude: 148.4508,
 		},
 	}, nil
 }
