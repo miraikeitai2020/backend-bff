@@ -9,9 +9,9 @@ import(
 	"github.com/gin-gonic/gin"
 
 	// generate package
-	"github.com/SaKu2110/gql-practice/pkg/bff"
-	"github.com/SaKu2110/gql-practice/pkg/server/controller"
-	"github.com/SaKu2110/gql-practice/pkg/server/resolver"
+	"github.com/miraikeitai2020/backend-bff-API/pkg/bff"
+	"github.com/miraikeitai2020/backend-bff-API/pkg/server/controller"
+	"github.com/miraikeitai2020/backend-bff-API/pkg/server/resolver"
 
 	// gql-gen package
 	"github.com/99designs/gqlgen/graphql/handler"
