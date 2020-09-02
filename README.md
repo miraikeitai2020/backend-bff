@@ -7,8 +7,9 @@
 
 ## How to run
 #### development API
-**ローカルで実行**  
+**ローカルで実行（goの実行環境以外で実行しないでください）**  
 - 実行コマンド： `make local-dev-run`
+- クリーンコマンド： `make clean`  
   
 ブラウザで http://localhost:9020 にアクセスする  
 ※ `go 1.13`の環境で実行可能  
