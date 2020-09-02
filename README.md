@@ -13,14 +13,14 @@
   
 ブラウザで http://localhost:9020 にアクセスする  
 ※ `go 1.13`の環境で実行可能  
-**Use Docker**  
+**Dockerで実行**  
 - ビルドコマンド： `make docker-dev-build`
 - 実行コマンド： `make docker-dev-run`
 
 #### production API
 - 実行コマンド： 
 
-**Use Docker**  
+**Dockerで実行**  
 - ビルドコマンド： 
 - 実行コマンド： 
 ## Detail Query
