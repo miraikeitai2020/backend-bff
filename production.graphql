@@ -55,6 +55,19 @@ type LogInfo {
     concentration: [Float!]!
 }
 
+type Spot {
+    id: Int!
+    name: String!
+    image: String!
+    description: String!
+    locate: Locate!
+}
+
+type Locate {
+    latitude: Float!
+    longitude: Float!
+}
+
 type Query {
     signin(id: String!, password: String!): String!
     # Re:sns
@@ -68,6 +81,7 @@ type Query {
     log(id: String!, logId: String!): LogInfo!
     logs(id: String): [LogInfo!]!
     # 未知しるべ
+    getSpots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Float!): [Spot!]! 
 }
 
 type Mutation {
@@ -82,4 +96,6 @@ type Mutation {
     addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Boolean!
     subscription(id: String!): Subscription!
     # 未知しるべ
+    setEvaluation(id: Int!, emotion: Int!, value: Int!): Boolean!
+    setSpot(image: [Byte!], name: String!, description: String!, latitude: Float!, longitude: Float!): Boolean!
 }
