@@ -1,1 +1,122 @@
-# TODO: Add a query for production API here.
+# How to generate graphQL code.
+# go run github.com/99designs/gqlgen 
+# or
+# make production-code
+
+# Re:sns
+# Response data format
+type UserHome {
+    name: String!
+    birthday: Date!
+    gender: Int!
+    genre: [String!]!
+}
+
+type Date {
+    year: Int!
+    month: Int!
+}
+
+type ArticleInfo {
+    tile: String!
+    imagePath: String!
+    articleID: String!
+    tags: [String!]!
+}
+
+type Article {
+    tile: String!
+    imagePath: String!
+    context: String!
+    nice: Int!
+    comment: [Comment]!
+}
+
+type Comment {
+    name: String!
+    image: String!
+    comment: String!
+}
+
+type List {
+    id: Int!
+    title: Int!
+    ImagePath: Int!
+}
+
+# めりはりこ
+# Response data format
+type Subsc {
+    id: String!
+    status: Boolean!
+}
+
+type Log {
+    id: String!
+    title: String!
+}
+
+type LogInfo {
+    id: String!
+    title: String!
+    date: String!
+    worktime: String!
+    concentration: [Float!]!
+}
+
+# 未知しるべ
+# Response data format
+type Spot {
+    id: Int!
+    name: String!
+    image: String!
+    description: String!
+    locate: Locate!
+}
+
+type Locate {
+    latitude: Float!
+    longitude: Float!
+}
+
+# Mutation
+# Response data format
+type Result {
+    status: Boolean!
+    message: String
+}
+
+# Query List
+type Query {
+    signin(id: String!, password: String!): String!
+    # Re:sns
+    userInfo(token: String!): UserHome!
+    genre(genre: String!, year: Int!, month: Int!): [ArticleInfo!]!
+    article(id: String!): Article!
+    like(userid: String, articleid: String): Boolean!
+    list(userid: String, articleid: String): [List]!
+    # めりはりこ
+    loglist(id: String): [Log!]!
+    log(id: String!, logId: String!): LogInfo!
+    logs(id: String): [LogInfo!]!
+    # 未知しるべ
+    spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Float!): [Spot!]! 
+}
+
+# Mutation List
+type Mutation {
+    signup(id: String!, password: String!): String!
+    # Re:sns
+    addUserInfo(token: String!, gender: Int!, name: String!, year: Int!, month: Int!): Result!
+    addgenre(token: String!, genre: [String]!): Result!
+    addLike(userid: String, articleid: String): Result!
+    addList(userid: String, articleid: String): Result!
+    delList(userid: String, articleid: String): Result!
+    addComment(token: String, id: String, comment: String): Result!
+    # めりはりこ
+    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addSubscription(id: String!): Subsc
+    # 未知しるべ
+    addEvaluation(id: Int!, emotion: Int!, value: Int!): Result!
+    addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
+}
