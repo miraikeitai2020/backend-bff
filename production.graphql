@@ -1,3 +1,10 @@
+# How to generate graphQL code.
+# go run github.com/99designs/gqlgen 
+# or
+# make production-code
+
+# Re:sns
+# Response data format
 type UserHome {
     name: String!
     birthday: Date!
@@ -37,6 +44,8 @@ type List {
     ImagePath: Int
 }
 
+# めりはりこ
+# Response data format
 type Subscription {
     id: String!
     status: Boolean!
@@ -55,6 +64,8 @@ type LogInfo {
     concentration: [Float!]!
 }
 
+# 未知しるべ
+# Response data format
 type Spot {
     id: Int!
     name: String!
@@ -68,6 +79,14 @@ type Locate {
     longitude: Float!
 }
 
+# Mutation
+# Response data format
+type Result {
+    status: Boolean!
+    message: String
+}
+
+# Query List
 type Query {
     signin(id: String!, password: String!): String!
     # Re:sns
@@ -84,18 +103,19 @@ type Query {
     getSpots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Float!): [Spot!]! 
 }
 
+# Mutation List
 type Mutation {
     signup(id: String!, password: String!): String!
     # Re:sns
-    setUserInfo(token: String!, gender: Int!, name: String!, year: Int!, month: Int!): Boolean!
-    setGenre(token: String!, genre: [String]!): Boolean!
-    setlike(userid: String, articleid: String): Boolean!
-    setList(userid: String, articleid: String): Boolean!
-    setComment(token: String, id: String, comment: String): Boolean!
+    setUserInfo(token: String!, gender: Int!, name: String!, year: Int!, month: Int!): Result!
+    setGenre(token: String!, genre: [String]!): Result!
+    setlike(userid: String, articleid: String): Result!
+    setList(userid: String, articleid: String): Result!
+    setComment(token: String, id: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Boolean!
+    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
     subscription(id: String!): Subscription!
     # 未知しるべ
-    setEvaluation(id: Int!, emotion: Int!, value: Int!): Boolean!
-    setSpot(image: [Byte!], name: String!, description: String!, latitude: Float!, longitude: Float!): Boolean!
+    setEvaluation(id: Int!, emotion: Int!, value: Int!): Result!
+    setSpot(image: [Byte!], name: String!, description: String!, latitude: Float!, longitude: Float!): Result!
 }
