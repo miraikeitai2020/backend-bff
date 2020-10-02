@@ -1,1 +1,85 @@
-# TODO: Add a query for production API here.
+type UserHome {
+    name: String!
+    birthday: Date!
+    gender: Int!
+    genre: [String!]!
+}
+
+type Date {
+    year: Int!
+    month: Int!
+}
+
+type ArticleInfo {
+    tile: String!
+    imagePath: String!
+    articleID: String!
+    tags: [String!]!
+}
+
+type Article {
+    tile: String!
+    imagePath: String!
+    context: String!
+    nice: Int!
+    comment: [Comment]!
+}
+
+type Comment {
+    name: String!
+    image: String!
+    comment: String!
+}
+
+type List {
+    id: Int
+    title: Int
+    ImagePath: Int
+}
+
+type Subscription {
+    id: String!
+    status: Boolean!
+}
+
+type Log {
+    id: String!
+    title: String!
+}
+
+type LogInfo {
+    id: String!
+    title: String!
+    date: String!
+    worktime: String!
+    concentration: [Float!]!
+}
+
+type Query {
+    signin(id: String!, password: String!): String!
+    # Re:sns
+    userInfo(token: String!): UserHome!
+    getGenre(genre: String!, year: Int, month: Int): [ArticleInfo!]!
+    getArticle(id: String!): Article!
+    getLike(userid: String, articleid: String): Boolean!
+    getList(userid: String, articleid: String): [List]!
+    # めりはりこ
+    loglist(id: String): [Log!]!
+    log(id: String!, logId: String!): LogInfo!
+    logs(id: String): [LogInfo!]!
+    # 未知しるべ
+}
+
+type Mutation {
+    signup(id: String!, password: String!): String!
+    # Re:sns
+    setUserInfo(token: String!, gender: Int!, name: String!, year: Int!, month: Int!): Boolean!
+    setGenre(token: String!, genre: [String]!): Boolean!
+    setlike(userid: String, articleid: String): Boolean!
+    setList(userid: String, articleid: String): Boolean!
+    setComment(token: String, id: String, comment: String): Boolean!
+    # めりはりこ
+    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Boolean!
+    subscription(id: String!): Subscription!
+    # 未知しるべ
+}
