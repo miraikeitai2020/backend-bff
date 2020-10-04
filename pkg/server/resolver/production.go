@@ -9,6 +9,8 @@ import (
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
+type Resolver struct{}
+
 func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 	panic("not implemented")
 }
@@ -21,7 +23,7 @@ func (r *mutationResolver) AddName(ctx context.Context, name string) (*model.Res
 	panic("not implemented")
 }
 
-func (r *mutationResolver) Addgenre(ctx context.Context, genre []*string) (*model.Result, error) {
+func (r *mutationResolver) AddGenre(ctx context.Context, genre []*string) (*model.Result, error) {
 	panic("not implemented")
 }
 

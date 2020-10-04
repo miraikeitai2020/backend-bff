@@ -168,7 +168,7 @@ type Mutation {
     ## ユーザー情報を登録
     addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
     addName(name: String!): Result!
-    addgenre(genre: [String]!): Result!
+    addGenre(genre: [String]!): Result!
     ## リスト管理
     addLike(articleid: String): Result!
     addList(articleid: String): Result!
