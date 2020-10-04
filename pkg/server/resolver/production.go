@@ -9,8 +9,6 @@ import (
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
-type Resolver struct{}
-
 func (r *mutationResolver) Signup(ctx context.Context, id string, password string) (*model.Token, error) {
 	panic("not implemented")
 }
