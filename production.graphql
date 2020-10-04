@@ -142,20 +142,20 @@ type ERRORS {
 # Query List
 type Query {
     ## ユーザー認証
-    signin(id: String!, password: String!): Token!
+    signin: Token!
     # Re:sns
     ## ユーザー情報取得
-    userInfo(token: String!): UserInfo!
-    like(userid: String, articleid: String): Like!
-    list(userid: String, articleid: String): List!
+    userInfo: UserInfo!
+    like(articleid: String): Like!
+    list(articleid: String): List!
     ## 記事取得
     genres: Genres!
     articles(genre: String!, year: Int!, month: Int!): Articles!
-    article(id: String!): Article!
+    article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
-    log(id: String!, logId: String!): Log!
-    logs(id: String): Logs!
+    log(logid: String!): Log!
+    logs: Logs!
     # 未知しるべ
     spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
 }
@@ -163,22 +163,22 @@ type Query {
 # Mutation List
 type Mutation {
     ## ユーザー登録
-    signup(id: String!, password: String!): Token!
+    signup: Token!
     # Re:sns
     ## ユーザー情報を登録
-    addConstantUserInfo(token: String!, gender: Int!, year: Int!, month: Int!): Result!
-    addName(token: String!, name: String!): Result!
-    addgenre(token: String!, genre: [String]!): Result!
+    addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
+    addName(name: String!): Result!
+    addgenre(genre: [String]!): Result!
     ## リスト管理
-    addLike(userid: String, articleid: String): Result!
-    addList(userid: String, articleid: String): Result!
-    delList(userid: String, articleid: String): Result!
+    addLike(articleid: String): Result!
+    addList(articleid: String): Result!
+    delList(articleid: String): Result!
     ## コメント登録
-    addComment(token: String, id: String, comment: String): Result!
+    addComment(articleid: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
-    addSubscription(id: String!): Result!
+    addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addSubscription: Result!
     # 未知しるべ
-    addEvaluation(id: Int!, emotion: Int!, value: Int!): Result!
+    addEvaluation(spotid: Int!, emotion: Int!, value: Int!): Result!
     addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
 }
