@@ -3,9 +3,21 @@
 # or
 # make production-code
 
+# Query
+# Response data format
+type Token {
+    value: String
+    errors: [ERRORS]
+}
+
 # Re:sns
 # Response data format
-type UserHome {
+type UserInfo {
+    info: User
+    errors: [ERRORS]
+}
+
+type User {
     name: String!
     birthday: Date!
     gender: Int!
@@ -17,19 +29,50 @@ type Date {
     month: Int!
 }
 
-type ArticleInfo {
-    tile: String!
-    imagePath: String!
-    articleID: String!
-    tags: [String!]!
+type Like {
+    status: Boolean! 
+    errors: [ERRORS]
+}
+
+type List {
+    articles: [ArticleHeader]
+    errors: [ERRORS]
+}
+
+type ArticleHeader {
+    id: Int!
+    title: Int!
+    ImagePath: Int!
+    tags: [String]
+}
+
+type Genres {
+    genres: [String]
+    errors: [ERRORS]
+}
+
+type Articles {
+    articles: [ArticleHeader]
+    errors: [ERRORS]
 }
 
 type Article {
+    info: ArticleInfo
+    errors: [ERRORS]
+}
+
+type ArticleInfo {
     tile: String!
     imagePath: String!
-    context: String!
     nice: Int!
-    comment: [Comment]!
+    context: String!
+    userStatus: ArticleUserInfo!
+    comment: [Comment]
+}
+
+type ArticleUserInfo {
+    nice: Boolean!
+    list: Boolean!
 }
 
 type Comment {
@@ -38,22 +81,11 @@ type Comment {
     comment: String!
 }
 
-type List {
-    id: Int!
-    title: Int!
-    ImagePath: Int!
-}
-
 # めりはりこ
 # Response data format
-type Subsc {
-    id: String!
-    status: Boolean!
-}
-
 type Log {
-    id: String!
-    title: String!
+    log: LogInfo
+    errors: [ERRORS]
 }
 
 type LogInfo {
@@ -64,8 +96,23 @@ type LogInfo {
     concentration: [Float!]!
 }
 
+type Logs {
+    logs: [LogData]
+    errors: [ERRORS]
+}
+
+type LogData {
+    id: String!
+    title: String!
+}
+
 # 未知しるべ
 # Response data format
+type Spots {
+    spots: [Spot]
+    errors: [ERRORS]
+}
+
 type Spot {
     id: Int!
     name: String!
@@ -83,40 +130,55 @@ type Locate {
 # Response data format
 type Result {
     status: Boolean!
+    errors: [ERRORS]
+}
+
+type ERRORS {
+    code: Int!
     message: String
+    description: String
 }
 
 # Query List
 type Query {
-    signin(id: String!, password: String!): String!
+    ## ユーザー認証
+    signin: Token!
     # Re:sns
-    userInfo(token: String!): UserHome!
-    genre(genre: String!, year: Int!, month: Int!): [ArticleInfo!]!
-    article(id: String!): Article!
-    like(userid: String, articleid: String): Boolean!
-    list(userid: String, articleid: String): [List]!
+    ## ユーザー情報取得
+    userInfo: UserInfo!
+    like(articleid: String): Like!
+    list(articleid: String): List!
+    ## 記事取得
+    genres: Genres!
+    articles(genre: String!, year: Int!, month: Int!): Articles!
+    article(articleid: String!): Article!
     # めりはりこ
-    loglist(id: String): [Log!]!
-    log(id: String!, logId: String!): LogInfo!
-    logs(id: String): [LogInfo!]!
+    ## ログ取得
+    log(logid: String!): Log!
+    logs: Logs!
     # 未知しるべ
-    spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Float!): [Spot!]! 
+    spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
 }
 
 # Mutation List
 type Mutation {
-    signup(id: String!, password: String!): String!
+    ## ユーザー登録
+    signup: Token!
     # Re:sns
-    addUserInfo(token: String!, gender: Int!, name: String!, year: Int!, month: Int!): Result!
-    addgenre(token: String!, genre: [String]!): Result!
-    addLike(userid: String, articleid: String): Result!
-    addList(userid: String, articleid: String): Result!
-    delList(userid: String, articleid: String): Result!
-    addComment(token: String, id: String, comment: String): Result!
+    ## ユーザー情報を登録
+    addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
+    addName(name: String!): Result!
+    addgenre(genre: [String]!): Result!
+    ## リスト管理
+    addLike(articleid: String): Result!
+    addList(articleid: String): Result!
+    delList(articleid: String): Result!
+    ## コメント登録
+    addComment(articleid: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
-    addSubscription(id: String!): Subsc
+    addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addSubscription: Result!
     # 未知しるべ
-    addEvaluation(id: Int!, emotion: Int!, value: Int!): Result!
+    addEvaluation(spotid: Int!, emotion: Int!, value: Int!): Result!
     addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
 }
