@@ -31,15 +31,15 @@ func VerifyToken(token string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	claims, ok := t.Claims.(jwt.MapClaims)
-	if !(ok && t.Valid) {
+	claims, status := t.Claims.(jwt.MapClaims)
+	if !(status && t.Valid) {
 		return nil, fmt.Errorf("[ERROR]: Faild get claims")
 	}
 	return claims, nil
 }
 
 func Hmac(token *jwt.Token) (interface{}, error) {
-	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+	if _, status := token.Method.(*jwt.SigningMethodHMAC); !status {
 		return nil, fmt.Errorf("[ERROR]: Faild Signing Method HMAC")
 	}
 	return signKey, nil
