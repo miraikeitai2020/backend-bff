@@ -4,7 +4,6 @@ import(
 	"fmt"
 	"time"
 	"io/ioutil"
-	_ "crypto/rsa"
     jwt "github.com/dgrijalva/jwt-go"
 )
 
