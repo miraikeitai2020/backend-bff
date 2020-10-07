@@ -121,7 +121,18 @@ func (r *mutationResolver) DelList(ctx context.Context, articleid *string) (*mod
 }
 
 func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, comment *string) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *mutationResolver) AddNewLogData(ctx context.Context, date string, title string, worktime string, concentration string) (*model.Result, error) {
