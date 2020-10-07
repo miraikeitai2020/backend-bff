@@ -13,24 +13,25 @@ type Token {
 # Re:sns
 # Response data format
 type UserInfo {
-    info: User
+    info: User!
     errors: [ERRORS]
 }
 
 type User {
-    name: String!
+    name: String
     birthday: Date!
-    gender: Int!
-    genre: [String!]!
+    gender: Int
+    genre: [String]
 }
 
 type Date {
-    year: Int!
-    month: Int!
+    year: Int
+    month: Int
+    day: Int
 }
 
 type Like {
-    status: Boolean! 
+    status: Boolean 
     errors: [ERRORS]
 }
 
@@ -40,9 +41,9 @@ type List {
 }
 
 type ArticleHeader {
-    id: Int!
-    title: Int!
-    ImagePath: Int!
+    id: Int
+    title: String
+    ImagePath: String
     tags: [String]
 }
 
@@ -62,23 +63,23 @@ type Article {
 }
 
 type ArticleInfo {
-    tile: String!
-    imagePath: String!
-    nice: Int!
-    context: String!
-    userStatus: ArticleUserInfo!
+    tile: String
+    imagePath: String
+    nice: Int
+    context: String
+    userStatus: ArticleUserInfo
     comment: [Comment]
 }
 
 type ArticleUserInfo {
-    nice: Boolean!
-    list: Boolean!
+    nice: Boolean
+    list: Boolean
 }
 
 type Comment {
-    name: String!
-    image: String!
-    comment: String!
+    name: String
+    image: String
+    comment: String
 }
 
 # めりはりこ
@@ -89,11 +90,11 @@ type Log {
 }
 
 type LogInfo {
-    id: String!
-    title: String!
-    date: String!
-    worktime: String!
-    concentration: [Float!]!
+    id: String
+    title: String
+    date: String
+    worktime: String
+    concentration: [Float]
 }
 
 type Logs {
@@ -102,8 +103,8 @@ type Logs {
 }
 
 type LogData {
-    id: String!
-    title: String!
+    id: String
+    title: String
 }
 
 # 未知しるべ
@@ -114,22 +115,22 @@ type Spots {
 }
 
 type Spot {
-    id: Int!
-    name: String!
-    image: String!
-    description: String!
+    id: Int
+    name: String
+    image: String
+    description: String
     locate: Locate!
 }
 
 type Locate {
-    latitude: Float!
-    longitude: Float!
+    latitude: Float
+    longitude: Float
 }
 
 # Mutation
 # Response data format
 type Result {
-    status: Boolean!
+    status: Boolean
     errors: [ERRORS]
 }
 
@@ -173,6 +174,7 @@ type Mutation {
     addLike(articleid: String): Result!
     addList(articleid: String): Result!
     delList(articleid: String): Result!
+    addRequest(genre: String, year: Int, month: Int, title: String, contents: String): Result!
     ## コメント登録
     addComment(articleid: String, comment: String): Result!
     # めりはりこ
