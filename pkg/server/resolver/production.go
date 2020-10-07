@@ -1,18 +1,30 @@
 package resolver
 
-// THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
-
 import (
 	"context"
 
+	"github.com/miraikeitai2020/backend-bff/pkg/auth"
+	"github.com/miraikeitai2020/backend-bff/pkg/utils"
 	"github.com/miraikeitai2020/backend-bff/pkg/bff"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
-type Resolver struct{}
-
 func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
-	panic("not implemented")
+	claims, errors := utils.ContextValueChecksum(ctx, "id", "pass")
+	if len(errors) > 0 {
+		return &model.Token{
+			Value: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	token, err := auth.GenerateToken(claims["id"])
+	if err != nil {
+	}
+	return &model.Token{
+		Value: &token,
+		Errors: []*model.Errors{},
+	}, nil
 }
 
 func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, year int, month int) (*model.Result, error) {
