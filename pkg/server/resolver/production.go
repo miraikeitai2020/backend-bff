@@ -166,7 +166,18 @@ func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, 
 }
 
 func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid int, emotion int, value int) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image []int, latitude float64, longitude float64) (*model.Result, error) {
