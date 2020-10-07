@@ -181,7 +181,18 @@ func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid int, emotio
 }
 
 func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image []int, latitude float64, longitude float64) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
