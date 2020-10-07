@@ -18,6 +18,9 @@ func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 		}, nil
 	}
 
+	//TODO: Request Auth API
+
+	
 	token, err := auth.GenerateToken(claims["id"])
 	if err != nil {
 	}
@@ -72,7 +75,24 @@ func (r *mutationResolver) AddSpot(ctx context.Context, name string, description
 }
 
 func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
-	panic("not implemented")
+	claims, errors := utils.ContextValueChecksum(ctx, "id", "pass")
+	if len(errors) > 0 {
+		return &model.Token{
+			Value: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	//TODO: Request Auth API
+
+
+	token, err := auth.GenerateToken(claims["id"])
+	if err != nil {
+	}
+	return &model.Token{
+		Value: &token,
+		Errors: []*model.Errors{},
+	}, nil
 }
 
 func (r *queryResolver) UserInfo(ctx context.Context) (*model.UserInfo, error) {
