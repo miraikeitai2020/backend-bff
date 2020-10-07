@@ -151,7 +151,18 @@ func (r *mutationResolver) AddNewLogData(ctx context.Context, date string, title
 }
 
 func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid int, emotion int, value int) (*model.Result, error) {
