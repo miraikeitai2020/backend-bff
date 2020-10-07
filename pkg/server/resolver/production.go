@@ -76,7 +76,18 @@ func (r *mutationResolver) AddGenre(ctx context.Context, genre []*string) (*mode
 }
 
 func (r *mutationResolver) AddLike(ctx context.Context, articleid *string) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *mutationResolver) AddList(ctx context.Context, articleid *string) (*model.Result, error) {
