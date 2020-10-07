@@ -19,9 +19,9 @@ func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 	}
 
 	//TODO: Request Auth API
-
+	id := claims["id"]
 	
-	token, err := auth.GenerateToken(claims["id"])
+	token, err := auth.GenerateToken(id)
 	if err != nil {
 	}
 	return &model.Token{
@@ -84,9 +84,9 @@ func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
 	}
 
 	//TODO: Request Auth API
-
-
-	token, err := auth.GenerateToken(claims["id"])
+	id := claims["id"]
+	
+	token, err := auth.GenerateToken(id)
 	if err != nil {
 	}
 	return &model.Token{
@@ -96,7 +96,31 @@ func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
 }
 
 func (r *queryResolver) UserInfo(ctx context.Context) (*model.UserInfo, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.UserInfo{
+			Info: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.UserInfo{
+		Info: &model.User{
+			Name: utils.CastStringPointer("SaKu"),
+			Birthday: &model.Date{
+				Year: utils.CastIntPointer(9),
+				Month: utils.CastIntPointer(2),
+			},
+			Gender: utils.CastIntPointer(1),
+			Genre: []*string {
+				utils.CastStringPointer("アニメ・漫画"),
+				utils.CastStringPointer("ほしまちすたじお"),
+				utils.CastStringPointer("星街すいせい"),
+				utils.CastStringPointer("vTuber"),
+			},
+		},
+		Errors: nil,
+	}, nil
 }
 
 func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Like, error) {
