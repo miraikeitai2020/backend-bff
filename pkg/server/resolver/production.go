@@ -31,7 +31,18 @@ func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 }
 
 func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, year int, month int) (*model.Result, error) {
-	panic("not implemented")
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Result{
+			Status: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Result{
+		Status: utils.CastBoolPointer(true),
+		Errors: errors,
+	}, nil
 }
 
 func (r *mutationResolver) AddName(ctx context.Context, name string) (*model.Result, error) {
