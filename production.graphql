@@ -6,14 +6,14 @@
 # Query
 # Response data format
 type Token {
-    value: String
+    value: String!
     errors: [ERRORS]
 }
 
 # Re:sns
 # Response data format
 type UserInfo {
-    info: User
+    info: User!
     errors: [ERRORS]
 }
 
@@ -21,12 +21,13 @@ type User {
     name: String!
     birthday: Date!
     gender: Int!
-    genre: [String!]!
+    genre: [String]
 }
 
 type Date {
     year: Int!
     month: Int!
+    day: Int!
 }
 
 type Like {
@@ -40,14 +41,14 @@ type List {
 }
 
 type ArticleHeader {
-    id: Int!
-    title: Int!
-    ImagePath: Int!
+    id: String!
+    title: String!
+    ImagePath: String!
     tags: [String]
 }
 
 type Genres {
-    genres: [String]
+    genres: [String!]
     errors: [ERRORS]
 }
 
@@ -66,7 +67,7 @@ type ArticleInfo {
     imagePath: String!
     nice: Int!
     context: String!
-    userStatus: ArticleUserInfo!
+    userStatus: ArticleUserInfo
     comment: [Comment]
 }
 
@@ -89,11 +90,11 @@ type Log {
 }
 
 type LogInfo {
-    id: String!
+    id: Int!
     title: String!
     date: String!
-    worktime: String!
-    concentration: [Float!]!
+    worktime: Int!
+    concentration: [Float!]
 }
 
 type Logs {
@@ -102,7 +103,7 @@ type Logs {
 }
 
 type LogData {
-    id: String!
+    id: Int!
     title: String!
 }
 
@@ -118,7 +119,7 @@ type Spot {
     name: String!
     image: String!
     description: String!
-    locate: Locate!
+    locate: Locate
 }
 
 type Locate {
@@ -135,8 +136,8 @@ type Result {
 
 type ERRORS {
     code: Int!
-    message: String
-    description: String
+    message: String!
+    description: String!
 }
 
 # Query List
@@ -154,7 +155,7 @@ type Query {
     article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
-    log(logid: String!): Log!
+    log(logid: Int!): Log!
     logs: Logs!
     # 未知しるべ
     spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
@@ -168,11 +169,12 @@ type Mutation {
     ## ユーザー情報を登録
     addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
     addName(name: String!): Result!
-    addgenre(genre: [String]!): Result!
+    addGenre(genre: [String]!): Result!
     ## リスト管理
     addLike(articleid: String): Result!
     addList(articleid: String): Result!
     delList(articleid: String): Result!
+    addRequest(genre: String, year: Int, month: Int, title: String, contents: String): Result!
     ## コメント登録
     addComment(articleid: String, comment: String): Result!
     # めりはりこ

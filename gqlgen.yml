@@ -1,5 +1,7 @@
+# TODO: Add gqlgen manifest here.
+# The configuration described here is the manifest of the production API.
 schema:
-  - development.graphql
+  - production.graphql
 
 exec:
   filename: pkg/bff/bff.go
@@ -8,6 +10,10 @@ exec:
 model:
   filename: pkg/server/model/model.go
   package: model
+
+# resolver:
+#  filename: pkg/server/resolver/production.go
+#  type: Resolver
 
 autobind:
   - "github.com/miraikeitai2020/backend-bff/pkg/server/model"
