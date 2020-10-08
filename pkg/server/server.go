@@ -37,7 +37,7 @@ func initializeController() controller.Controller {
 
 	return controller.Controller{
 		PlaygroundServer: playground.Handler("GraphQL playground", "/query"),
-		QueryServer: srv,
+		QueryServer: controller.QueryMiddleware(srv),
 	}
 }
 
