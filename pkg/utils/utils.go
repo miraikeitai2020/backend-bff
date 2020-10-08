@@ -39,21 +39,25 @@ func MakeErrors(code int, msg string) (errors *model.Errors) {
 	case 400:
 		errors = &model.Errors{
 			Code: 400,
-			Message: &STATUS_CODE_400,
-			Description: &msg,
+			Message: STATUS_CODE_400,
+			Description: msg,
 		}
 	case 403:
 		errors = &model.Errors{
 			Code: 403,
-			Message: &STATUS_CODE_403,
-			Description: &msg,
+			Message: STATUS_CODE_403,
+			Description: msg,
 		}
 	case 500:
 		errors = &model.Errors{
 			Code: 500,
-			Message: &STATUS_CODE_500,
-			Description: &msg,
+			Message: STATUS_CODE_500,
+			Description: msg,
 		}
 	}
 	return
+}
+
+func CastStringPointer(str string) *string {
+	return &str
 }
