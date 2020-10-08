@@ -6,7 +6,7 @@
 # Query
 # Response data format
 type Token {
-    value: String
+    value: String!
     errors: [ERRORS]
 }
 
@@ -18,20 +18,20 @@ type UserInfo {
 }
 
 type User {
-    name: String
+    name: String!
     birthday: Date!
-    gender: Int
+    gender: Int!
     genre: [String]
 }
 
 type Date {
-    year: Int
-    month: Int
-    day: Int
+    year: Int!
+    month: Int!
+    day: Int!
 }
 
 type Like {
-    status: Boolean 
+    status: Boolean! 
     errors: [ERRORS]
 }
 
@@ -41,14 +41,14 @@ type List {
 }
 
 type ArticleHeader {
-    id: Int
-    title: String
-    ImagePath: String
+    id: String!
+    title: String!
+    ImagePath: String!
     tags: [String]
 }
 
 type Genres {
-    genres: [String]
+    genres: [String!]
     errors: [ERRORS]
 }
 
@@ -63,23 +63,23 @@ type Article {
 }
 
 type ArticleInfo {
-    tile: String
-    imagePath: String
-    nice: Int
-    context: String
+    tile: String!
+    imagePath: String!
+    nice: Int!
+    context: String!
     userStatus: ArticleUserInfo
     comment: [Comment]
 }
 
 type ArticleUserInfo {
-    nice: Boolean
-    list: Boolean
+    nice: Boolean!
+    list: Boolean!
 }
 
 type Comment {
-    name: String
-    image: String
-    comment: String
+    name: String!
+    image: String!
+    comment: String!
 }
 
 # めりはりこ
@@ -90,11 +90,11 @@ type Log {
 }
 
 type LogInfo {
-    id: String
-    title: String
-    date: String
-    worktime: String
-    concentration: [Float]
+    id: Int!
+    title: String!
+    date: String!
+    worktime: Int!
+    concentration: [Float!]
 }
 
 type Logs {
@@ -103,8 +103,8 @@ type Logs {
 }
 
 type LogData {
-    id: String
-    title: String
+    id: Int!
+    title: String!
 }
 
 # 未知しるべ
@@ -115,29 +115,29 @@ type Spots {
 }
 
 type Spot {
-    id: Int
-    name: String
-    image: String
-    description: String
-    locate: Locate!
+    id: Int!
+    name: String!
+    image: String!
+    description: String!
+    locate: Locate
 }
 
 type Locate {
-    latitude: Float
-    longitude: Float
+    latitude: Float!
+    longitude: Float!
 }
 
 # Mutation
 # Response data format
 type Result {
-    status: Boolean
+    status: Boolean!
     errors: [ERRORS]
 }
 
 type ERRORS {
     code: Int!
-    message: String
-    description: String
+    message: String!
+    description: String!
 }
 
 # Query List
@@ -155,7 +155,7 @@ type Query {
     article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
-    log(logid: String!): Log!
+    log(logid: Int!): Log!
     logs: Logs!
     # 未知しるべ
     spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
