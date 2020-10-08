@@ -449,15 +449,15 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 	}
 
 	return &model.Spots{
-		Spots: []*model.Spots{
+		Spots: []*model.Spot{
 			&model.Spot{
 				ID: 114,
 				Name: "与那国島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Yonaguni_Island_ISS039.jpg",
 				Description: "南西諸島八重山列島の島。島としては日本の最西端に位置し、国境の島と呼ばれる。",
 				Locate: &model.Locate{
-					latitude: 24.2705,
-    				longitude: 122.5557,
+					Latitude: 24.2705,
+    				Longitude: 122.5557,
 				},
 			},
 			&model.Spot{
@@ -466,8 +466,8 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				Image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Aerial-View-Minamitori-Island-1987.jpg",
 				Description: "小笠原諸島の島。本州から1,800 km離れた日本の最東端としても知られている。",
 				Locate: &model.Locate{
-					latitude: 24.1659,
-    				longitude: 153.5912,
+					Latitude: 24.1659,
+    				Longitude: 153.5912,
 				},
 			},
 			&model.Spot{
@@ -476,8 +476,8 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				Image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Okinotorishima20070602.jpg",
 				Description: "太平洋（フィリピン海）上に位置する小笠原諸島に属する孤立島",
 				Locate: &model.Locate{
-					latitude: 20.2531,
-    				longitude: 136.0411,
+					Latitude: 20.2531,
+    				Longitude: 136.0411,
 				},
 			},
 			&model.Spot{
@@ -486,8 +486,8 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				Image: "https://upload.wikimedia.org/wikipedia/commons/4/43/Iturup_Terra_cut.jpg",
 				Description: "千島列島南部に位置する同列島内で面積が最大の島。複数の活火山が存在する火山島である。",
 				Locate: &model.Locate{
-					latitude: 45.3326,
-    				longitude: 148.4508,
+					Latitude: 45.3326,
+    				Longitude: 148.4508,
 				},
 			},
 		},
