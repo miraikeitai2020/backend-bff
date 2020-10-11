@@ -148,7 +148,7 @@ type Query {
     ## ユーザー情報取得
     userInfo: UserInfo!
     like(articleid: String): Like!
-    list(articleid: String): List!
+    list: List!
     ## 記事取得
     genres: Genres!
     articles(genre: String!, year: Int, month: Int): Articles!
