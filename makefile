@@ -12,12 +12,12 @@ DEVCONFIG=config/development/gqlgen.yml
 GQLGEN=github.com/99designs/gqlgen
 
 all:
+	$(SSL) -out private.key 4096
 clean:
 	rm private.key
 	rm -rf pkg/bff
 	rm -rf pkg/server/model
 build:
-	$(SSL) -out private.key 4096
 	$(GO_RUN) $(GQLGEN)
 	$(GO_BUILD) -o server pkg/server/server.go
 docker-build:
