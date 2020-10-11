@@ -12,7 +12,7 @@ var(
 )
 
 func init() {
-	signKey, _ = ioutil.ReadFile("./demo.rsa")
+	signKey, _ = ioutil.ReadFile("./private.key")
 }
 
 func GenerateToken(id string) (string, error) {
