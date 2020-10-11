@@ -20,6 +20,8 @@ clean:
 build:
 	$(GO_RUN) $(GQLGEN)
 	$(GO_BUILD) -o server pkg/server/server.go
+run:
+	$(GO_RUN) pkg/server/server.go
 docker-build:
 	$(DOCKER_BUILD) ./ -t miraikeitai2020/bff:0.2.0
 docker-run:
