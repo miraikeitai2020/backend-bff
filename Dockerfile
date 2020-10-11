@@ -14,7 +14,7 @@ FROM alpine:latest
 WORKDIR /usr/local/bin/
 RUN apk add --no-cache --update ca-certificates
 COPY --from=build-env /go/src/github.com/miraikeitai2020/backend-bff/server /usr/local/bin/server
-COPY --from=build-env /go/src/github.com/miraikeitai2020/backend-bff/demo.rsa /usr/local/bin/demo.rsa
+COPY --from=build-env /go/src/github.com/miraikeitai2020/backend-bff/private.key /usr/local/bin/private.key
 ENV PORT 9020
 
 EXPOSE 9020
