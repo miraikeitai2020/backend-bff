@@ -63,7 +63,7 @@ type Article {
 }
 
 type ArticleInfo {
-    tile: String!
+    title: String!
     imagePath: String!
     nice: Int!
     context: String!
