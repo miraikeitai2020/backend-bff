@@ -275,7 +275,7 @@ func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Lik
 	}, nil
 }
 
-func (r *queryResolver) List(ctx context.Context, articleid *string) (*model.List, error) {
+func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.List{
@@ -322,7 +322,7 @@ func (r *queryResolver) Genres(ctx context.Context) (*model.Genres, error) {
 	}, nil
 }
 
-func (r *queryResolver) Articles(ctx context.Context, genre string, year int, month int) (*model.Articles, error) {
+func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, month *int) (*model.Articles, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Articles{
@@ -330,6 +330,26 @@ func (r *queryResolver) Articles(ctx context.Context, genre string, year int, mo
 			Errors: errors,
 		}, nil
 	}
+	if year == nil && month != nil {
+		return &model.Articles{
+			Articles: nil,
+			Errors: []*model.Errors{
+				utils.MakeErrors(400, "Argment `year` is emptly"),
+			},
+		}, nil
+	}
+	if year != nil && month == nil {
+		return &model.Articles{
+			Articles: nil,
+			Errors: []*model.Errors{
+				utils.MakeErrors(400, "Argment `month` is emptly"),
+			},
+		}, nil
+	}
+
+	// cast *int to int
+	// i := *year
+	// fmt.Println(i)
 
 	return &model.Articles{
 		Articles: []*model.ArticleHeader{
