@@ -275,7 +275,7 @@ func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Lik
 	}, nil
 }
 
-func (r *queryResolver) List(ctx context.Context, articleid *string) (*model.List, error) {
+func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.List{
