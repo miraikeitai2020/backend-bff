@@ -1,60 +1,38 @@
-# backend-bff API
+# backend-bff
+
+
+<img src="./img/logo.png" width="600" alt="architecture" />
+
+The `backend-bff` API is one of the services of [mirai-cluster](https://github.com/miraikeitai2020/mirai-cluster) developed by Future Mobile Phone Project 2020.  
+
 
 ## Description
-### List API（API一覧）
-1. development：クエリ練習用 API
-2. production：本番環境用 graphQL API
+### Endpoints
+|Method|URL|Description|
+|:-:|:-:|:-|
+|GET|`/`||
+|POST|`/query`|resolve client query handler|
 
-## How to run
-#### development API
-**ローカルで実行（goの実行環境以外で実行しないでください）**  
-- 実行コマンド： `make local-dev-run`
-- クリーンコマンド： `make clean`  
-  
-ブラウザで http://localhost:9020 にアクセスする  
-※ `go 1.13`の環境で実行可能  
-**Dockerで実行**  
-- ビルドコマンド： `make docker-dev-build`
-- 実行コマンド： `make docker-dev-run`
+### How to run
+#### Build & Run
+**◎Local**  
+Advance preparation command: `make`  
+Create files  
+- `pkg/bff/bff.go`
+- `pkg/server/model/model.go`
+- `private.key`
 
-#### production API
-- 実行コマンド： 
+Run API command: `make run`  
 
-**Dockerで実行**  
-- ビルドコマンド： 
-- 実行コマンド： 
-## Detail Query
-### development
-#### List Query
-|   Type   |     Name     |            Argument            |    Return    |
-| :------: | :----------: | :----------------------------: |:-----------: |
-| Query    | odd          | number:Int!                    | Judge!       |
-| Query    | even         | number:Int!                    | Judge!      |
-| Query    | city         | id:Int                         | CityData!    |
-| Query    | allCity      |                                | [CityData!]! |
-| Mutation | addArticle   | index:Int, article: String     | Article!     |
-| Mutation | postUserData | emotion: Float!, city: String! | CityData!    |
+**◎Docker**
+Build command: `make docker-build`  
+Run command: `make docker-run`  
 
-#### Data Type
-**CityData**
-|    Name   |  Type   |
-| :-------: | :-----: |
-| name      | String! |
-| latitude  | Float!  |
-| longitude | Float!  |
+#### Access
+Access the link below from your browser.  
+`http://localhost:9020`
 
-**Judge**
-|  Name  |   Type   |
-| :----: | :------: |
-| number | Int!     |
-| judge  | Boolean! |
-
-**Article**
-|   Name  |   Type  |
-| :-----: | :-----: |
-| index   | Int!    |
-| article | String! |
-
-#### production
-#### List Query
-#### Data Type
+## Other
+- [Commit Rules](./docs/commit_rules.md)
+- [Branch Rules](./docs/branch_rules.md)
+- [Issue Rules](./docs/issue_rules.md)
