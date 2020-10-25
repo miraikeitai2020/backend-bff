@@ -7,9 +7,9 @@ exec:
   filename: pkg/bff/bff.go
   package: bff
 
-model:
-  filename: pkg/server/model/model.go
-  package: model
+# model:
+#   filename: pkg/server/model/model.go
+#   package: model
 
 # resolver:
 #  filename: pkg/server/resolver/production.go
