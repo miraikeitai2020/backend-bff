@@ -490,14 +490,23 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Spots{
-			Spots: nil,
+			Spot: nil,
+			Detour: nil,
 			Errors: errors,
 		}, nil
 	}
 
 	return &model.Spots{
-		Spots: []*model.Spot{
-			&model.Spot{
+		Spot: &model.Spot{
+			ID: "114",
+			Name: "与那国島",
+			Locate: &model.Locate{
+				Latitude: 24.2705,
+    			Longitude: 122.5557,
+			},
+		},
+		Detour: []*model.Detour{
+			&model.Detour{
 				ID: "114",
 				Name: "与那国島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Yonaguni_Island_ISS039.jpg",
@@ -505,36 +514,6 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				Locate: &model.Locate{
 					Latitude: 24.2705,
     				Longitude: 122.5557,
-				},
-			},
-			&model.Spot{
-				ID: "514",
-				Name: "南鳥島",
-				Image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Aerial-View-Minamitori-Island-1987.jpg",
-				Description: "小笠原諸島の島。本州から1,800 km離れた日本の最東端としても知られている。",
-				Locate: &model.Locate{
-					Latitude: 24.1659,
-    				Longitude: 153.5912,
-				},
-			},
-			&model.Spot{
-				ID: "1919",
-				Name: "沖ノ鳥島",
-				Image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Okinotorishima20070602.jpg",
-				Description: "太平洋（フィリピン海）上に位置する小笠原諸島に属する孤立島",
-				Locate: &model.Locate{
-					Latitude: 20.2531,
-    				Longitude: 136.0411,
-				},
-			},
-			&model.Spot{
-				ID: "810",
-				Name: "択捉島",
-				Image: "https://upload.wikimedia.org/wikipedia/commons/4/43/Iturup_Terra_cut.jpg",
-				Description: "千島列島南部に位置する同列島内で面積が最大の島。複数の活火山が存在する火山島である。",
-				Locate: &model.Locate{
-					Latitude: 45.3326,
-    				Longitude: 148.4508,
 				},
 			},
 		},
