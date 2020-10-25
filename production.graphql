@@ -90,7 +90,7 @@ type Log {
 }
 
 type LogInfo {
-    id: Int!
+    id: String!
     title: String!
     date: String!
     worktime: Int!
@@ -103,7 +103,7 @@ type Logs {
 }
 
 type LogData {
-    id: Int!
+    id: String!
     title: String!
 }
 
@@ -115,7 +115,7 @@ type Spots {
 }
 
 type Spot {
-    id: Int!
+    id: String!
     name: String!
     image: String!
     description: String!
@@ -156,7 +156,7 @@ type Query {
     article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
-    log(logid: Int!): Log!
+    log(logid: String!): Log!
     logs: Logs!
     # 未知しるべ
     spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
@@ -182,6 +182,6 @@ type Mutation {
     addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
     addSubscription: Result!
     # 未知しるべ
-    addEvaluation(spotid: Int!, emotion: Int!, value: Int!): Result!
+    addEvaluation(spotid: String!, emotion: Int!, value: Int!): Result!
     addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
 }

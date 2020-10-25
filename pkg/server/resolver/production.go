@@ -181,7 +181,7 @@ func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, 
 	}, nil
 }
 
-func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid int, emotion int, value int) (*model.Result, error) {
+func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emotion int, value int) (*model.Result, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Result{
@@ -432,7 +432,7 @@ func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.A
 	}, nil
 }
 
-func (r *queryResolver) Log(ctx context.Context, logid int) (*model.Log, error) {
+func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Log{
@@ -443,7 +443,7 @@ func (r *queryResolver) Log(ctx context.Context, logid int) (*model.Log, error) 
 
 	return &model.Log{
 		Log: &model.LogInfo{
-			ID: 1919810,
+			ID: "1919810",
 			Title: "サービス残業",
 			Date: time.Now().String(),
 			Worktime: 810,
@@ -470,15 +470,15 @@ func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
 	return &model.Logs{
 		Logs: []*model.LogData{
 			&model.LogData{
-				ID: 114514,
+				ID: "114514",
 				Title: "サービス残業",
 			},
 			&model.LogData{
-				ID: 1919,
+				ID: "1919",
 				Title: "サービス残業",
 			},
 			&model.LogData{
-				ID: 810,
+				ID: "810",
 				Title: "サービス残業",
 			},
 		},
@@ -498,7 +498,7 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 	return &model.Spots{
 		Spots: []*model.Spot{
 			&model.Spot{
-				ID: 114,
+				ID: "114",
 				Name: "与那国島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Yonaguni_Island_ISS039.jpg",
 				Description: "南西諸島八重山列島の島。島としては日本の最西端に位置し、国境の島と呼ばれる。",
@@ -508,7 +508,7 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				},
 			},
 			&model.Spot{
-				ID: 514,
+				ID: "514",
 				Name: "南鳥島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Aerial-View-Minamitori-Island-1987.jpg",
 				Description: "小笠原諸島の島。本州から1,800 km離れた日本の最東端としても知られている。",
@@ -518,7 +518,7 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				},
 			},
 			&model.Spot{
-				ID: 1919,
+				ID: "1919",
 				Name: "沖ノ鳥島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Okinotorishima20070602.jpg",
 				Description: "太平洋（フィリピン海）上に位置する小笠原諸島に属する孤立島",
@@ -528,7 +528,7 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 				},
 			},
 			&model.Spot{
-				ID: 810,
+				ID: "810",
 				Name: "択捉島",
 				Image: "https://upload.wikimedia.org/wikipedia/commons/4/43/Iturup_Terra_cut.jpg",
 				Description: "千島列島南部に位置する同列島内で面積が最大の島。複数の活火山が存在する火山島である。",
