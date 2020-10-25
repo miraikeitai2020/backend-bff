@@ -369,6 +369,33 @@ func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, m
 	}, nil
 }
 
+func (r *queryResolver) ArticlesFromTag(ctx context.Context, tag string) (*model.Articles, error) {
+	_, errors := utils.ContextValueChecksum(ctx, "token")
+	if len(errors) > 0 {
+		return &model.Articles{
+			Articles: nil,
+			Errors: errors,
+		}, nil
+	}
+
+	return &model.Articles{
+		Articles: []*model.ArticleHeader{
+			&model.ArticleHeader{
+				ID: "114514",
+				Title: "50万人突破するまで歌い続ける",
+				ImagePath: "https://pbs.twimg.com/media/Ei6rI-QVkAAGp5d?format=jpg&name=medium",
+				Tags: []*string{
+					utils.CastStringPointer("アニメ・漫画"),
+					utils.CastStringPointer("ほしまちすたじお"),
+					utils.CastStringPointer("星街すいせい"),
+					utils.CastStringPointer("vTuber"),
+				},
+			},
+		},
+		Errors: nil,
+	}, nil
+}
+
 func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.Article, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
