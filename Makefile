@@ -14,7 +14,6 @@ all:
 clean:
 	rm private.key
 	rm -rf pkg/bff
-	rm -rf pkg/server/model
 run:
 	$(GO_RUN) main.go
 docker-build:
