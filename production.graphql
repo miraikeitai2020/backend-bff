@@ -186,7 +186,7 @@ type Mutation {
     ## コメント登録
     addComment(articleid: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
     addSubscription: Result!
     # 未知しるべ
     addEvaluation(spotid: String!, emotion: Int!, status: Boolean!): Result!
