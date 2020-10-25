@@ -61,21 +61,21 @@ func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
 
 	info := []*model.ArticleHeader {
 		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "image URL",
+			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
 			"euclid",
 			"scp-jp",
 			"如月工務店",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "image URL",
+			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
 			"safe",
 			"scp-jp",
 			"認識災害",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "image URL",
+			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
 			"euclid",
 			"scp-jp",
 			"犬",
@@ -123,21 +123,21 @@ func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, m
 
 	info := []*model.ArticleHeader {
 		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "image URL",
+			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
 			"euclid",
 			"scp-jp",
 			"如月工務店",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "image URL",
+			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
 			"safe",
 			"scp-jp",
 			"認識災害",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "image URL",
+			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
 			"euclid",
 			"scp-jp",
 			"犬",
@@ -158,21 +158,21 @@ func (r *queryResolver) ArticlesFromTag(ctx context.Context, tag string) (*model
 
 	info := []*model.ArticleHeader {
 		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "image URL",
+			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
 			"euclid",
 			"scp-jp",
 			"如月工務店",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "image URL",
+			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
 			"safe",
 			"scp-jp",
 			"認識災害",
 			"酩酊街",
 		),
 		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "image URL",
+			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
 			"euclid",
 			"scp-jp",
 			"犬",
@@ -189,7 +189,8 @@ func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.A
 	}
 
 	info := utils.PackArticleInfo(
-		"50万人突破するまで歌い続ける", "image URL", 1919810,
+		"9fdf8594",
+		"50万人突破するまで歌い続ける", "https://pbs.twimg.com/media/Ei6rI-QVkAAGp5d?format=jpg&name=medium", 1919810,
 		"星街すいせいとはvTuberである。2018年3月22日個人で活動するvTuberとしてデビュー、2019年5月19日にカバー株式会社の事務所であるホロライブプロダクションに所属し、現在は企業所属のvTuberとして活動している。2020/9/27の放送で彼女はチャンネル登録者が50万人に到達する瞬間を彼女の動画の視聴者と迎えようという趣旨の動画配信を行った。動画配信自体は歌配信メインで行われ、配信の途中で無事チャンネル登録者数が50万人に到達した。そして50万に到達した記念として50万人到達を祝う3Dモデルによるライブ配信をすることを発表した。ライブは2020年10月19日21:00から行われる予定だ。SNSでの盛り上がりは以下の盛り上がりを見せていた「もう50万達成してるやん、おめでとうございます ｱｱｧｧｧｧｱｱｱｧｧｧｧｱｱｱ!!!!」「Congratulations Suisei for the 500k subscribers !! I am super excited for your 3rd LIVE ! 50万おめでとう!!」「すいちゃん3Dライブやったぜぇぇぇ！前回すごく良かったから楽しみだ。すいちゃん登録50万おめでとう！」筆者としても彼女の活躍に大いに期待するところである。「今日もすいちゃんは可愛い！」",
 		true, true,
 		utils.PackCooment(
