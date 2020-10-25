@@ -90,7 +90,7 @@ type Log {
 }
 
 type LogInfo {
-    id: Int!
+    id: String!
     title: String!
     date: String!
     worktime: Int!
@@ -103,22 +103,29 @@ type Logs {
 }
 
 type LogData {
-    id: Int!
+    id: String!
     title: String!
 }
 
 # 未知しるべ
 # Response data format
 type Spots {
-    spots: [Spot]
+    spot: Spot
+    detour: [Detour]
     errors: [ERRORS]
 }
 
 type Spot {
-    id: Int!
+    id: String!
+    name: String!
+    locate: Locate
+}
+
+type Detour {
+    id: String!
     name: String!
     image: String!
-    description: String!
+    Description: String!
     locate: Locate
 }
 
@@ -152,10 +159,11 @@ type Query {
     ## 記事取得
     genres: Genres!
     articles(genre: String!, year: Int, month: Int): Articles!
+    articlesFromTag(tag: String!): Articles!
     article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
-    log(logid: Int!): Log!
+    log(logid: String!): Log!
     logs: Logs!
     # 未知しるべ
     spots(latitude: Float!, longitude: Float!, worktime: Int!, emotion: Int!): Spots! 
@@ -167,7 +175,7 @@ type Mutation {
     signup: Token!
     # Re:sns
     ## ユーザー情報を登録
-    addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
+    addConstantUserInfo(gender: Int!, year: Int!, month: Int!, date: Int!): Result!
     addName(name: String!): Result!
     addGenre(genre: [String]!): Result!
     ## リスト管理
@@ -178,9 +186,9 @@ type Mutation {
     ## コメント登録
     addComment(articleid: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
     addSubscription: Result!
     # 未知しるべ
-    addEvaluation(spotid: Int!, emotion: Int!, value: Int!): Result!
-    addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
+    addEvaluation(spotid: String!, emotion: Int!, status: Boolean!): Result!
+    addSpot(name: String!, description: String!, image: String!, latitude: Float!, longitude: Float!): Result!
 }

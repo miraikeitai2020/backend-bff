@@ -1,22 +1,38 @@
-# backend-bff API
+# backend-bff
+
+
+<img src="./img/logo.png" width="600" alt="architecture" />
+
+The `backend-bff` API is one of the services of [mirai-cluster](https://github.com/miraikeitai2020/mirai-cluster) developed by Future Mobile Phone Project 2020.  
+
 
 ## Description
+### Endpoints
+|Method|URL|Description|
+|:-:|:-:|:-|
+|GET|`/`||
+|POST|`/query`|resolve client query handler|
 
-## How to run
-### Make private key
-- 実行コマンド： `make`
-### Build API
-#### Use `Golang`
-- 実行コマンド： `make docker-build`
-- 削除コマンド： `make clean`
-#### Use Docker
-- 実行コマンド： `make docker-build`
+### How to run
+#### Build & Run
+**◎Local**  
+Advance preparation command: `make`  
+Create files  
+- `pkg/bff/bff.go`
+- `pkg/server/model/model.go`
+- `private.key`
 
-### Run API
-#### Use `Golang`
-- 実行コマンド： `make run`
-#### Use Docker
-- 実行コマンド： `make docker-run`
+Run API command: `make run`  
 
-ブラウザで http://localhost:9020 にアクセスする 
-※ `go 1.13`の環境で実行可能  
+**◎Docker**
+Build command: `make docker-build`  
+Run command: `make docker-run`  
+
+#### Access
+Access the link below from your browser.  
+`http://localhost:9020`
+
+## Other
+- [Commit Rules](./docs/commit_rules.md)
+- [Branch Rules](./docs/branch_rules.md)
+- [Issue Rules](./docs/issue_rules.md)
