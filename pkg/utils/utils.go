@@ -3,6 +3,7 @@ package utils
 import(
 	"fmt"
 	"context"
+	"encoding/json"
 
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
@@ -115,29 +116,6 @@ func PackArticleHeaderInfo(id, title, image string, tag ...string) (*model.Artic
 	}
 }
 
-func PackArticleInfo(id, title, image string, niceNum int, ctxt string, nice, list bool, comment ...*model.Comment) (*model.ArticleInfo) {
-	return &model.ArticleInfo{
-		ID: id, 
-		Title: title,
-		ImagePath: image,
-		Nice: niceNum,
-		Context: ctxt,
-		UserStatus: &model.ArticleUserInfo{
-			Nice: nice,
-			List: list,
-		},
-		Comment: comment,
-	}
-}
-
-func PackCooment(name, image, comment string) (*model.Comment) {
-	return &model.Comment{
-		Name: name,
-		Image: image,
-		Comment: comment,
-	}
-}
-
 func PackLogInfo(id, title, date string, time int, concent []float64) (*model.LogInfo) {
 	return &model.LogInfo{
 		ID: id,
@@ -177,6 +155,44 @@ func PackDetourInfo(id, name, image, description string, latitude, longitude flo
 			Longitude: longitude,
 		},
 	}
+}
+
+func MakeArticlesRequestJSON(genre string, year, month *int) ([]byte, error) {
+	request := model.ArticlesRequest {
+		Genre: genre,
+		Year: year,
+		Month: month,
+	}
+	return json.Marshal(request)
+}
+
+func MakeArticlesResponseStruct(response []byte) (info model.ArticlesResponse) {
+	json.Unmarshal(response, &info)
+	return
+}
+
+func MakeArticlesFromTagResponseJSON(tag string) ([]byte, error) {
+	request := model.ArticlesFromTagResponse {
+		Tag: tag,
+	}
+	return json.Marshal(request)
+}
+
+func MakeArticleRequestJSON(id string) ([]byte, error) {
+	request := model.ArticleRequest {
+		ID: id,
+	}
+	return json.Marshal(request)
+}
+
+func MakeArticleResponseStruct(response []byte) (info model.ArticleInfo) {
+	json.Unmarshal(response, &info)
+	return	
+}
+
+func MakeAddLikeResponseStruct(response []byte) (info model.AddLikeResponse) {
+	json.Unmarshal(response, &info)
+	return
 }
 
 func CastStringPointer(str string) *string {
