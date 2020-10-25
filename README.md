@@ -1,5 +1,8 @@
 # backend-bff
 
+<p align="left">
+  <a href="https://github.com/actions/setup-node/actions?query=workflow%3Abuild-test"><img alt="build-test status" src="https://github.com/miraikeitai2020/backend-bff/workflows/Docker Image CI/badge.svg"></a>
+</p>
 
 <img src="./img/logo.png" width="600" alt="architecture" />
 
@@ -24,7 +27,7 @@ Create files
 
 Run API command: `make run`  
 
-**◎Docker**
+**◎Docker**  
 Build command: `make docker-build`  
 Run command: `make docker-run`  
 
