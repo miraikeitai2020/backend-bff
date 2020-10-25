@@ -152,6 +152,7 @@ type Query {
     ## 記事取得
     genres: Genres!
     articles(genre: String!, year: Int, month: Int): Articles!
+    articlesFromTag(tag: String!): Articles!
     article(articleid: String!): Article!
     # めりはりこ
     ## ログ取得
