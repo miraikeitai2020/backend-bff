@@ -31,7 +31,7 @@ func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 	}, nil
 }
 
-func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, year int, month int) (*model.Result, error) {
+func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, year int, month int, date int) (*model.Result, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Result{
