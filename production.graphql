@@ -110,15 +110,22 @@ type LogData {
 # 未知しるべ
 # Response data format
 type Spots {
-    spots: [Spot]
+    spot: Spot
+    detour: [Detour]
     errors: [ERRORS]
 }
 
 type Spot {
     id: String!
     name: String!
+    locate: Locate
+}
+
+type Detour {
+    id: String!
+    name: String!
     image: String!
-    description: String!
+    Description: String!
     locate: Locate
 }
 
