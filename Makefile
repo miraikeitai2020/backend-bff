@@ -18,6 +18,6 @@ clean:
 run:
 	$(GO_RUN) main.go
 docker-build:
-	$(DOCKER_BUILD) ./ -t miraikeitai2020/bff:0.2.0
+	$(DOCKER_BUILD) ./ -t miraikeitai2020/bff:0.3.0
 docker-run:
-	$(DOCKER_RUN) -d -p 9020:9020 miraikeitai2020/bff:0.2.0
+	$(DOCKER_RUN) -d -p 9020:9020 miraikeitai2020/bff:0.3.0
