@@ -196,7 +196,7 @@ func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emo
 	}, nil
 }
 
-func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image []int, latitude float64, longitude float64) (*model.Result, error) {
+func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image string, latitude float64, longitude float64) (*model.Result, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Result{
