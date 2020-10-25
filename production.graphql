@@ -183,5 +183,5 @@ type Mutation {
     addSubscription: Result!
     # 未知しるべ
     addEvaluation(spotid: String!, emotion: Int!, status: Boolean!): Result!
-    addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
+    addSpot(name: String!, description: String!, image: String!, latitude: Float!, longitude: Float!): Result!
 }
