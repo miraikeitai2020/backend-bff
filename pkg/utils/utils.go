@@ -115,8 +115,9 @@ func PackArticleHeaderInfo(id, title, image string, tag ...string) (*model.Artic
 	}
 }
 
-func PackArticleInfo(title, image string, niceNum int, ctxt string, nice, list bool, comment ...*model.Comment) (*model.ArticleInfo) {
+func PackArticleInfo(id, title, image string, niceNum int, ctxt string, nice, list bool, comment ...*model.Comment) (*model.ArticleInfo) {
 	return &model.ArticleInfo{
+		ID: id, 
 		Title: title,
 		ImagePath: image,
 		Nice: niceNum,
