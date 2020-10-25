@@ -256,15 +256,50 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 	if len(errors) > 0 {
 		return view.MakeSpotsResponse(nil, nil, errors), nil
 	}
-
-	spot := utils.PackSpotInfo("9fdf8c2e", "五稜郭タワー", 41.7969245, 140.7545951)
-	detour := []*model.Detour{
-		utils.PackDetourInfo(
-			"9fdf8c2e", "的場公園",
-			"https://files.slack.com/files-pri/T013J36GEBZ-F01D9KA8SBC/matoba-park.jpg",
-			"変わった滑り台や広い比較的広い砂場のような場所がある公園。",
-			41.7795742, 140.7533145,
-		),
+	body, err := utils.MakeSpotRequestJSON(latitude, longitude, worktime, emotion)
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request, err := http.NewRequest("POST", apiPath.Spot + "/query/spot", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+    if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	spotInfo := utils.MakeSpotResponseStruct(body)
+	spot := utils.PackSpotInfo(spotInfo.Spot.ID, spotInfo.Spot.Name, spotInfo.Spot.Latitude, spotInfo.Spot.Longitude)
+	
+	// body, err = utils.MakeDetourRequestJSON(spotInfo.Spot.Latitude, spotInfo.Spot.Longitude, latitude, longitude, worktime, emotion)
+	body, err = utils.MakeDetourRequestJSON(41.7680351, 140.6949824, 41.7969245, 140.7545951, 10000, 1)
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request, err = http.NewRequest("POST", apiPath.Spot + "/query/detour", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	response, err = client.Do(request)
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+	if err != nil {
+		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	detourInfo := utils.MakeDetourResponseStruct(body)
+	var detour []*model.Detour
+	for _, v := range detourInfo.Detour {
+		detour = append(detour, utils.PackDetourInfo(
+			v.ID, v.Name, v.Image, v.Description,
+			v.Latitude, v.Longitude,
+		))
 	}
 	return view.MakeSpotsResponse(spot, detour, errors), nil
 }
