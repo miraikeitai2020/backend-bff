@@ -63,6 +63,7 @@ type Article {
 }
 
 type ArticleInfo {
+    id: String!
     title: String!
     imagePath: String!
     nice: Int!
