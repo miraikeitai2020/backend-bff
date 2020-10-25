@@ -195,6 +195,54 @@ func MakeAddLikeResponseStruct(response []byte) (info model.AddLikeResponse) {
 	return
 }
 
+func MakeSpotRequestJSON(latitude, longitude float64, worktime, emotion int) ([]byte, error) {
+	request := model.SpotRequest {
+		Latitude: latitude,
+		Longitude: longitude,
+		Walktime: worktime,
+		Emotion: emotion,
+	}
+	return json.Marshal(request)
+}
+
+func MakeSpotResponseStruct(response []byte) (info model.SpotResponse) {
+	json.Unmarshal(response, &info)
+	return
+}
+
+func MakeDetourRequestJSON(spotLatitude, spotLongitude, userLatitude, userLongitude float64, worktime, emotion int) ([]byte, error) {
+	request := model.DetourRequest {
+		SpotLatitude: spotLatitude,
+		SpotLongitude: spotLongitude,
+		UserLatitude: userLatitude,
+		UserLongitude: userLongitude,
+		Walktime: worktime,
+		Emotion: emotion,
+	}
+	return json.Marshal(request)
+}
+
+func MakeDetourResponseStruct(response []byte) (info model.DetourResponse) {
+	json.Unmarshal(response, &info)
+	return
+}
+
+func MakeAddSpotRequest(name, image, desc string, latitude, longitude float64) ([]byte, error) {
+	request := model.AddSpotRequest {
+		Name: name,
+		Image: image,
+		Description: desc,
+		Latitude: latitude,
+		Longitude: longitude,
+	}
+	return json.Marshal(request)
+}
+
+func MakeAddSpotResponseStruct(response []byte) (info model.AddSpotResponse) {
+	json.Unmarshal(response, &info)
+	return
+}
+
 func CastStringPointer(str string) *string {
 	return &str
 }

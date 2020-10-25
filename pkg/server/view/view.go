@@ -173,13 +173,6 @@ func MakeSpotsResponse(spot *model.Spot, detour []*model.Detour, errors []*model
 			Errors: errors,
 		}
 	}
-	if len(detour) == 0 {
-		return &model.Spots{
-			Spot: nil,
-			Detour: nil,
-			Errors: utils.MakeErrors(500, "detour value is empty."),
-		}
-	}
 	return &model.Spots{
 		Spot: spot,
 		Detour: detour,
