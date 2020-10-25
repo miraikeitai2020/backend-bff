@@ -13,7 +13,7 @@ type APIPath struct {
 	Memory		string	`envconfig:"MEMORY_API"`
 	Collection	string	`envconfig:"COLLECTION_API"`
 	Log			string	`envconfig:"LOG_API"`
-	Spot		string	`envconfig:"SPOT_API"`
+	Spot		string	`envconfig:"SPOT_API" default:""`
 	Evaluation	string	`envconfig:"EVALUATION_API"`
 }
 
