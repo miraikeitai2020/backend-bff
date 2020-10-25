@@ -167,7 +167,7 @@ type Mutation {
     signup: Token!
     # Re:sns
     ## ユーザー情報を登録
-    addConstantUserInfo(gender: Int!, year: Int!, month: Int!): Result!
+    addConstantUserInfo(gender: Int!, year: Int!, month: Int!, date: Int!): Result!
     addName(name: String!): Result!
     addGenre(genre: [String]!): Result!
     ## リスト管理
