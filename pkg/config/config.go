@@ -9,7 +9,7 @@ import(
 type APIPath struct {
 	Auth		string	`envconfig:"AUTH_API"`
 	User		string	`envconfig:"USER_API"`
-	Record		string	`envconfig:"RECORD_API" default:"https://backend-record.herokuapp.com"`
+	Record		string	`envconfig:"RECORD_API" default:""`
 	Memory		string	`envconfig:"MEMORY_API"`
 	Collection	string	`envconfig:"COLLECTION_API"`
 	Log			string	`envconfig:"LOG_API"`
