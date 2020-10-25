@@ -3,8 +3,11 @@ package resolver
 import(
 	"fmt"
 	"time"
+	"bytes"
 
 	"context"
+	"net/http"
+	"io/ioutil"
 	"github.com/miraikeitai2020/backend-bff/pkg/auth"
 	"github.com/miraikeitai2020/backend-bff/pkg/utils"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
@@ -103,108 +106,108 @@ func (r *queryResolver) Genres(ctx context.Context) (*model.Genres, error) {
 func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, month *int) (*model.Articles, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
-		return &model.Articles{
-			Articles: nil,
-			Errors: errors,
-		}, nil
+		return view.MakeArticlesResponse(nil, errors), nil
 	}
-	if year == nil && month != nil {
+	body, err := utils.MakeArticlesRequestJSON(genre, year, month)
+	if err != nil {
 		return view.MakeArticlesResponse(
-			nil,
-			utils.MakeErrors(400, "Argment `year` is emptly"),
+			nil, utils.MakeErrors(
+				500,
+				fmt.Sprintf("%v", err),
+			),
 		), nil
 	}
-	if year != nil && month == nil {
+	request, err := http.NewRequest("GET", apiPath.Record + "/query/articles", bytes.NewBuffer(body))
+	if err != nil {
 		return view.MakeArticlesResponse(
-			nil,
-			utils.MakeErrors(400, "Argment `year` is emptly"),
+			nil, utils.MakeErrors(
+				500,
+				fmt.Sprintf("%v", err),
+			),
 		), nil
 	}
-
-	info := []*model.ArticleHeader {
-		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
-			"euclid",
-			"scp-jp",
-			"如月工務店",
-			"酩酊街",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
-			"safe",
-			"scp-jp",
-			"認識災害",
-			"酩酊街",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
-			"euclid",
-			"scp-jp",
-			"犬",
-			"酩酊街",
-		),
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeArticlesResponse(
+			nil, utils.MakeErrors(
+				500,
+				fmt.Sprintf("%v", err),
+			),
+		), nil
 	}
-	return view.MakeArticlesResponse(info, errors), nil
+	body, err = ioutil.ReadAll(response.Body)
+    if err != nil {
+        return view.MakeArticlesResponse(
+			nil, utils.MakeErrors(
+				500,
+				fmt.Sprintf("%v", err),
+			),
+		), nil
+    }
+	info := utils.MakeArticlesResponseStruct(body)
+	return view.MakeArticlesResponse(info.ArticleList, errors), nil
 }
 
 func (r *queryResolver) ArticlesFromTag(ctx context.Context, tag string) (*model.Articles, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
-		return &model.Articles{
-			Articles: nil,
-			Errors: errors,
-		}, nil
+		return view.MakeArticlesResponse(nil, errors), nil
 	}
-
-	info := []*model.ArticleHeader {
-		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
-			"euclid",
-			"scp-jp",
-			"如月工務店",
-			"酩酊街",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
-			"safe",
-			"scp-jp",
-			"認識災害",
-			"酩酊街",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
-			"euclid",
-			"scp-jp",
-			"犬",
-			"酩酊街",
-		),
+	body, err := utils.MakeArticlesFromTagResponseJSON(tag)
+	if err != nil {
+		return view.MakeArticlesResponse(
+			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
 	}
-	return view.MakeArticlesResponse(info, errors), nil
+	request, err := http.NewRequest("GET", apiPath.Record + "/query/tag/articles", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeArticlesResponse(
+			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeArticlesResponse(
+			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+    if err != nil {
+        return view.MakeArticlesResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+    }
+	info := utils.MakeArticlesResponseStruct(body)
+	return view.MakeArticlesResponse(info.ArticleList, errors), nil
 }
 
 func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.Article, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	claims, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeArticleResponse(nil, errors), nil
 	}
-
-	info := utils.PackArticleInfo(
-		"9fdf8594",
-		"50万人突破するまで歌い続ける", "https://pbs.twimg.com/media/Ei6rI-QVkAAGp5d?format=jpg&name=medium", 1919810,
-		"星街すいせいとはvTuberである。2018年3月22日個人で活動するvTuberとしてデビュー、2019年5月19日にカバー株式会社の事務所であるホロライブプロダクションに所属し、現在は企業所属のvTuberとして活動している。2020/9/27の放送で彼女はチャンネル登録者が50万人に到達する瞬間を彼女の動画の視聴者と迎えようという趣旨の動画配信を行った。動画配信自体は歌配信メインで行われ、配信の途中で無事チャンネル登録者数が50万人に到達した。そして50万に到達した記念として50万人到達を祝う3Dモデルによるライブ配信をすることを発表した。ライブは2020年10月19日21:00から行われる予定だ。SNSでの盛り上がりは以下の盛り上がりを見せていた「もう50万達成してるやん、おめでとうございます ｱｱｧｧｧｧｱｱｱｧｧｧｧｱｱｱ!!!!」「Congratulations Suisei for the 500k subscribers !! I am super excited for your 3rd LIVE ! 50万おめでとう!!」「すいちゃん3Dライブやったぜぇぇぇ！前回すごく良かったから楽しみだ。すいちゃん登録50万おめでとう！」筆者としても彼女の活躍に大いに期待するところである。「今日もすいちゃんは可愛い！」",
-		true, true,
-		utils.PackCooment(
-			"User Name",
-			"https://ca.slack-edge.com/T013J36GEBZ-U013S3FU8FQ-259987cfcb76-512",
-			"今日もかわいいー！",
-		),
-		utils.PackCooment(
-			"User Name",
-			"https://ca.slack-edge.com/T013J36GEBZ-U013J3F33MM-6ce119c38fca-512",
-			"今日もかわいいー！",
-		),
-	)
-	return view.MakeArticleResponse(info, errors), nil
+	m, err := auth.VerifyToken(claims["token"])
+	if err != nil {
+		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err := utils.MakeArticleRequestJSON(articleid)
+	if err != nil {
+		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request, err := http.NewRequest("GET", apiPath.Record + "/query/article", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request.Header.Set("UserID", m["sub"].(string))
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeArticleResponse(nil, utils.MakeErrors(500,fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+    if err != nil {
+        return view.MakeArticleResponse(nil, utils.MakeErrors(500,fmt.Sprintf("%v", err))), nil
+	}
+	info := utils.MakeArticleResponseStruct(body)
+	info.ID = articleid
+	return view.MakeArticleResponse(&info, errors), nil
 }
 
 func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, error) {
