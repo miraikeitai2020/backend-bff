@@ -162,6 +162,23 @@ func (r *mutationResolver) AddSpot(ctx context.Context, name string, description
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
-
-	return view.MakeResultResponse(true, errors), nil
+	body, err := utils.MakeAddSpotRequest(name, "", description, latitude, longitude)
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request, err := http.NewRequest("POST", apiPath.Spot + "/mutation/add/spot", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+    if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	info := utils.MakeAddSpotResponseStruct(body)
+	return view.MakeResultResponse(info.Status, errors), nil
 }
