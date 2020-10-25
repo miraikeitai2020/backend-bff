@@ -182,6 +182,6 @@ type Mutation {
     addNewLogData(date: String!, title: String!, worktime: String!, concentration: String!): Result!
     addSubscription: Result!
     # 未知しるべ
-    addEvaluation(spotid: String!, emotion: Int!, value: Int!): Result!
+    addEvaluation(spotid: String!, emotion: Int!, status: Boolean!): Result!
     addSpot(name: String!, description: String!, image: [Int!], latitude: Float!, longitude: Float!): Result!
 }

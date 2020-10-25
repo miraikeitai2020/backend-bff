@@ -181,7 +181,7 @@ func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, 
 	}, nil
 }
 
-func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emotion int, value int) (*model.Result, error) {
+func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emotion int, status bool) (*model.Result, error) {
 	_, errors := utils.ContextValueChecksum(ctx, "token")
 	if len(errors) > 0 {
 		return &model.Result{
