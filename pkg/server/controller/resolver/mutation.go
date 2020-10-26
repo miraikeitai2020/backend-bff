@@ -153,8 +153,26 @@ func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emo
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
+	body, err := utils.MakeAddEvaluationRequestJSON(spotid, emotion, status)
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	request, err := http.NewRequest("POST", apiPath.Evaluation + "/mutation/evaluate/spot", bytes.NewBuffer(body))
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	body, err = ioutil.ReadAll(response.Body)
+	if err != nil {
+		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+	}
+	info := utils.MakeMutationResponseStruct(body)
 
-	return view.MakeResultResponse(true, errors), nil
+	return view.MakeResultResponse(info.Status, errors), nil
 }
 
 func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image string, latitude float64, longitude float64) (*model.Result, error) {
@@ -179,6 +197,6 @@ func (r *mutationResolver) AddSpot(ctx context.Context, name string, description
     if err != nil {
 		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
 	}
-	info := utils.MakeAddSpotResponseStruct(body)
+	info := utils.MakeMutationResponseStruct(body)
 	return view.MakeResultResponse(info.Status, errors), nil
 }

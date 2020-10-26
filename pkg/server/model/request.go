@@ -37,3 +37,9 @@ type AddSpotRequest struct {
 	Latitude	float64	`json:"latitude"`
 	Longitude	float64	`json:"longitude"`
 }
+
+type AddEvaluationRequest struct {
+	ID		string	`json:"id"`
+	Emotion	int		`json:"emotion"`
+	Status	bool	`json:"status"`
+}
