@@ -17,12 +17,12 @@ func MakeSignResponse(token string, errors []*model.Errors) (*model.Token) {
 			Errors: errors,
 		}
 	}
-	/*if token == "" {
+	if token == "" {
 		return &model.Token {
 			Value: "",
-			Errors: utils.MakeErrors(500, "Token value is empty."),
+			Errors: service.MakeErrors(500, errgen.New("Articles is empty.")),
 		}
-	}*/
+	}
 	return &model.Token {
 		Value: token,
 		Errors: nil,
@@ -81,12 +81,12 @@ func MakeListResponse(list []*model.ArticleHeader, errors []*model.Errors) (*mod
 			Errors: errors,
 		}
 	}
-	/*if len(list) == 0 {
+	if len(list) == 0 {
 		return &model.List{
 			Articles: nil,
-			Errors: utils.MakeErrors(500, "list value is empty."),
+			Errors: service.MakeErrors(500, errgen.New("Articles is empty.")),
 		}
-	}*/
+	}
 	return &model.List{
 		Articles: list,
 		Errors: errors,
@@ -100,12 +100,12 @@ func MakeGenresResponse(errors []*model.Errors, genres ...string) (*model.Genres
 			Errors: errors,
 		}
 	}
-	/*if len(genres) == 0 {
+	if len(genres) == 0 {
 		return &model.Genres{
 			Genres: nil,
-			Errors: utils.MakeErrors(500, "genre value is empty."),
+			Errors: service.MakeErrors(500, errgen.New("Articles is empty.")),
 		}
-	}*/
+	}
 	return &model.Genres{
 		Genres: genres,
 		Errors: errors,
@@ -166,12 +166,12 @@ func MakeLogsResponse(info []*model.LogData, errors []*model.Errors) (*model.Log
 			Errors: errors,
 		}
 	}
-	/*if len(info) < 0 {
+	if len(info) < 0 {
 		return &model.Logs{
 			Logs: nil,
-			Errors: utils.MakeErrors(500, "logdata is empty."),
+			Errors: service.MakeErrors(500, errgen.New("Articles is empty.")),
 		}
-	}*/
+	}
 	return &model.Logs{
 		Logs: info,
 		Errors: errors,
