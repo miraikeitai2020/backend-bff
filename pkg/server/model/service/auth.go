@@ -1,10 +1,11 @@
-package auth
+package service
 
 import(
 	"fmt"
 	"time"
 	"io/ioutil"
-    jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
 )
 
 var(
@@ -25,7 +26,7 @@ func GenerateToken(id string) (string, error) {
     return token.SignedString(signKey)
 }
 
-func VerifyToken(token string) (map[string]interface{}, error) {
+func VerifyToken(token string) (*dto.ClimeLoader, error) {
 	t, err := jwt.Parse(token, Hmac)
 	if err != nil {
 		return nil, err
@@ -34,7 +35,7 @@ func VerifyToken(token string) (map[string]interface{}, error) {
 	if !(status && t.Valid) {
 		return nil, fmt.Errorf("[ERROR]: Faild get claims")
 	}
-	return claims, nil
+	return dto.MakeClimeLoader(claims), nil
 }
 
 func Hmac(token *jwt.Token) (interface{}, error) {

@@ -1,11 +1,15 @@
-package model
+package dto
+
+import(
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
+)
 
 type ArticlesResponse struct {
-	ArticleList []*ArticleHeader `json:"articleList"`
+	ArticleList []*model.ArticleHeader `json:"articleList"`
 }
 
-type AddLikeResponse struct {
-	Nice int `json:"nice"`
+type ArticleResponse struct {
+	ArticleInfo model.ArticleInfo
 }
 
 type SpotResponse struct {
@@ -30,8 +34,4 @@ type DetourInfo struct {
 	Description	string	`json:"description"`
 	Latitude	float64	`json:"latitude"`
 	Longitude	float64	`json:"longitude"`
-}
-
-type MutationResponse struct {
-	Status	bool	`json:"status"`
 }

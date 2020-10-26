@@ -1,21 +1,17 @@
 package resolver
 
 import(
-	"fmt"
 	"time"
-	"bytes"
-
 	"context"
-	"net/http"
-	"io/ioutil"
-	"github.com/miraikeitai2020/backend-bff/pkg/auth"
 	"github.com/miraikeitai2020/backend-bff/pkg/utils"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
 )
 
 func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
-	claims, errors := utils.ContextValueChecksum(ctx, "id", "pass")
+	claims, errors := service.CreateHeaderLoader(ctx, "id", "pass")
 	if len(errors) > 0 {
 		return view.MakeSignResponse("", errors), nil
 	}
@@ -23,32 +19,31 @@ func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
 	//TODO: Request Auth API
 	id := claims["id"]
 	
-	token, err := auth.GenerateToken(id)
+	token, err := service.GenerateToken(id)
 	if err != nil {
-		errors = utils.MakeErrors(500, fmt.Sprintf("%v", err))
-		return view.MakeSignResponse("", errors), nil
+		return view.MakeSignResponse("", service.MakeErrors(500, err)), nil
 	}
 	return view.MakeSignResponse(token, nil), nil
 }
 
 func (r *queryResolver) UserInfo(ctx context.Context) (*model.UserInfo, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeUserInfoResponse(nil, errors), nil
 	}
 
 	info := utils.PackUserInfo(
 		"user name", 2020, 10, 25, 1,
-		"euclid",
-		"scp-jp",
-		"如月工務店",
-		"酩酊街",
+		"ドラマ",
+		"音楽",
+		"その他",
+		"政治",
 	)
 	return view.MakeUserInfoResponse(info, errors), nil
 }
 
 func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Like, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLikeResponse(false, errors), nil
 	}
@@ -57,7 +52,7 @@ func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Lik
 }
 
 func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeListResponse(nil, errors), nil
 	}
@@ -65,153 +60,99 @@ func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
 	info := []*model.ArticleHeader {
 		utils.PackArticleHeaderInfo(
 			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
-			"euclid",
-			"scp-jp",
-			"如月工務店",
-			"酩酊街",
+			"ドラマ",
+			"音楽",
+			"その他",
+			"政治",
 		),
 		utils.PackArticleHeaderInfo(
 			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
-			"safe",
-			"scp-jp",
-			"認識災害",
-			"酩酊街",
+			"ドラマ",
+			"音楽",
+			"その他",
+			"政治",
 		),
 		utils.PackArticleHeaderInfo(
 			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
-			"euclid",
-			"scp-jp",
-			"犬",
-			"酩酊街",
+			"ドラマ",
+			"音楽",
+			"その他",
+			"政治",
 		),
 	}
 	return view.MakeListResponse(info, errors), nil
 }
 
 func (r *queryResolver) Genres(ctx context.Context) (*model.Genres, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeGenresResponse(errors), nil
 	}
 
 	return view.MakeGenresResponse(
 		errors,
-		"euclid",
-		"scp-jp",
-		"如月工務店",
-		"酩酊街",
+		"ドラマ",
+		"音楽",
+		"その他",
+		"政治",
 	), nil
 }
 
 func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, month *int) (*model.Articles, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeArticlesResponse(nil, errors), nil
 	}
-	body, err := utils.MakeArticlesRequestJSON(genre, year, month)
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(
-				500,
-				fmt.Sprintf("%v", err),
-			),
-		), nil
-	}
-	request, err := http.NewRequest("GET", apiPath.Record + "/query/articles", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(
-				500,
-				fmt.Sprintf("%v", err),
-			),
-		), nil
-	}
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(
-				500,
-				fmt.Sprintf("%v", err),
-			),
-		), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
+
+	// Request Record API //
+	client := dao.MakeArticlesClient(genre, year, month)
+	body, err := client.Request()
     if err != nil {
-        return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(
-				500,
-				fmt.Sprintf("%v", err),
-			),
-		), nil
-    }
-	info := utils.MakeArticlesResponseStruct(body)
-	return view.MakeArticlesResponse(info.ArticleList, errors), nil
+        return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	// Retrun Response //
+	return view.MakeArticlesResponse(body, errors), nil
 }
 
 func (r *queryResolver) ArticlesFromTag(ctx context.Context, tag string) (*model.Articles, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeArticlesResponse(nil, errors), nil
 	}
-	body, err := utils.MakeArticlesFromTagResponseJSON(tag)
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	request, err := http.NewRequest("GET", apiPath.Record + "/query/tag/articles", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeArticlesResponse(
-			nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
+
+	// Request Record API //
+	client := dao.MakeArticlesFromTagClient(tag)
+	body, err := client.Request()
     if err != nil {
-        return view.MakeArticlesResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-    }
-	info := utils.MakeArticlesResponseStruct(body)
-	return view.MakeArticlesResponse(info.ArticleList, errors), nil
+        return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
+	}
+	
+	// Retrun Response //
+	return view.MakeArticlesResponse(body, errors), nil
 }
 
 func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.Article, error) {
-	claims, errors := utils.ContextValueChecksum(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeArticleResponse(nil, errors), nil
 	}
-	m, err := auth.VerifyToken(claims["token"])
+	claims, err := service.VerifyToken(header["token"])
 	if err != nil {
-		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+		return view.MakeArticleResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	body, err := utils.MakeArticleRequestJSON(articleid)
-	if err != nil {
-		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	request, err := http.NewRequest("GET", apiPath.Record + "/query/article", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeArticleResponse(nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	request.Header.Set("UserID", m["sub"].(string))
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeArticleResponse(nil, utils.MakeErrors(500,fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
+
+	client := dao.MakeArticleClient(articleid)
+	body, err := client.Request(claims.Load("sub"))
     if err != nil {
-        return view.MakeArticleResponse(nil, utils.MakeErrors(500,fmt.Sprintf("%v", err))), nil
+        return view.MakeArticleResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	info := utils.MakeArticleResponseStruct(body)
-	info.ID = articleid
-	return view.MakeArticleResponse(&info, errors), nil
+
+	return view.MakeArticleResponse(body, errors), nil
 }
 
 func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLogResponse(nil, errors), nil
 	}
@@ -229,7 +170,7 @@ func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, erro
 }
 
 func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLogsResponse(nil, errors), nil
 	}
@@ -252,54 +193,25 @@ func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
 }
 
 func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude float64, worktime int, emotion int) (*model.Spots, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeSpotsResponse(nil, nil, errors), nil
 	}
-	body, err := utils.MakeSpotRequestJSON(latitude, longitude, worktime, emotion)
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	request, err := http.NewRequest("POST", apiPath.Spot + "/query/spot", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
+	client := dao.MakeSpotClient(latitude, longitude, worktime, emotion)
+	body, err := client.Request()
     if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+		return view.MakeSpotsResponse(nil, nil, service.MakeErrors(500, err)), nil
 	}
-	spotInfo := utils.MakeSpotResponseStruct(body)
-	spot := utils.PackSpotInfo(spotInfo.Spot.ID, spotInfo.Spot.Name, spotInfo.Spot.Latitude, spotInfo.Spot.Longitude)
-	
-	// body, err = utils.MakeDetourRequestJSON(spotInfo.Spot.Latitude, spotInfo.Spot.Longitude, latitude, longitude, worktime, emotion)
-	body, err = utils.MakeDetourRequestJSON(41.7680351, 140.6949824, 41.7969245, 140.7545951, 10000, 1)
+	spot := service.ConvertResponseSpot(body)
+
+	//
+	client = dao.MakeDetourClient(spot.Spot.Latitude, spot.Spot.Longitude, latitude, longitude, worktime, emotion)
+	body, err = client.Request()
 	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+		return view.MakeSpotsResponse(nil, nil, service.MakeErrors(500, err)), nil
 	}
-	request, err = http.NewRequest("POST", apiPath.Spot + "/query/detour", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	response, err = client.Do(request)
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
-	if err != nil {
-		return view.MakeSpotsResponse(nil, nil, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	detourInfo := utils.MakeDetourResponseStruct(body)
-	var detour []*model.Detour
-	for _, v := range detourInfo.Detour {
-		detour = append(detour, utils.PackDetourInfo(
-			v.ID, v.Name, v.Image, v.Description,
-			v.Latitude, v.Longitude,
-		))
-	}
-	return view.MakeSpotsResponse(spot, detour, errors), nil
+
+	detour := service.ConvertResponseDetour(body)
+
+	return view.MakeSpotsResponse(&spot, &detour, errors), nil
 }
