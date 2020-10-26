@@ -157,32 +157,9 @@ func PackDetourInfo(id, name, image, description string, latitude, longitude flo
 	}
 }
 
-func MakeArticlesRequestJSON(genre string, year, month *int) ([]byte, error) {
-	request := model.ArticlesRequest {
-		Genre: genre,
-		Year: year,
-		Month: month,
-	}
-	return json.Marshal(request)
-}
-
 func MakeArticlesResponseStruct(response []byte) (info model.ArticlesResponse) {
 	json.Unmarshal(response, &info)
 	return
-}
-
-func MakeArticlesFromTagResponseJSON(tag string) ([]byte, error) {
-	request := model.ArticlesFromTagResponse {
-		Tag: tag,
-	}
-	return json.Marshal(request)
-}
-
-func MakeArticleRequestJSON(id string) ([]byte, error) {
-	request := model.ArticleRequest {
-		ID: id,
-	}
-	return json.Marshal(request)
 }
 
 func MakeArticleResponseStruct(response []byte) (info model.ArticleInfo) {
@@ -195,31 +172,9 @@ func MakeAddLikeResponseStruct(response []byte) (info model.AddLikeResponse) {
 	return
 }
 
-func MakeSpotRequestJSON(latitude, longitude float64, worktime, emotion int) ([]byte, error) {
-	request := model.SpotRequest {
-		Latitude: latitude,
-		Longitude: longitude,
-		Walktime: worktime,
-		Emotion: emotion,
-	}
-	return json.Marshal(request)
-}
-
 func MakeSpotResponseStruct(response []byte) (info model.SpotResponse) {
 	json.Unmarshal(response, &info)
 	return
-}
-
-func MakeDetourRequestJSON(spotLatitude, spotLongitude, userLatitude, userLongitude float64, worktime, emotion int) ([]byte, error) {
-	request := model.DetourRequest {
-		SpotLatitude: spotLatitude,
-		SpotLongitude: spotLongitude,
-		UserLatitude: userLatitude,
-		UserLongitude: userLongitude,
-		Walktime: worktime,
-		Emotion: emotion,
-	}
-	return json.Marshal(request)
 }
 
 func MakeDetourResponseStruct(response []byte) (info model.DetourResponse) {
@@ -227,29 +182,9 @@ func MakeDetourResponseStruct(response []byte) (info model.DetourResponse) {
 	return
 }
 
-func MakeAddSpotRequest(name, image, desc string, latitude, longitude float64) ([]byte, error) {
-	request := model.AddSpotRequest {
-		Name: name,
-		Image: image,
-		Description: desc,
-		Latitude: latitude,
-		Longitude: longitude,
-	}
-	return json.Marshal(request)
-}
-
 func MakeMutationResponseStruct(response []byte) (info model.MutationResponse) {
 	json.Unmarshal(response, &info)
 	return
-}
-
-func MakeAddEvaluationRequestJSON(id string, emotion int, status bool) ([]byte, error) {
-	request := model.AddEvaluationRequest {
-		ID: id,
-		Emotion: emotion,
-		Status: status,
-	}
-	return json.Marshal(request)
 }
 
 func CastStringPointer(str string) *string {
