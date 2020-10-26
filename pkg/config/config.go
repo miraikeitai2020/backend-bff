@@ -14,7 +14,7 @@ type APIPath struct {
 	Collection	string	`envconfig:"COLLECTION_API"`
 	Log			string	`envconfig:"LOG_API"`
 	Spot		string	`envconfig:"SPOT_API" default:""`
-	Evaluation	string	`envconfig:"EVALUATION_API"`
+	Evaluation	string	`envconfig:"EVALUATION_API" default:""`
 }
 
 func GetRouterAddr() (addr string) {
