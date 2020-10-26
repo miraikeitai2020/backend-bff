@@ -5,6 +5,9 @@ import(
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
+/*-------------------------------*/
+/* Sign query response generator */
+/*-------------------------------*/
 func MakeSignResponse(token string, errors []*model.Errors) (*model.Token) {
 	if len(errors) > 0 {
 		return &model.Token {
@@ -24,6 +27,9 @@ func MakeSignResponse(token string, errors []*model.Errors) (*model.Token) {
 	}
 }
 
+/*-------------------------------*/
+/*  Mutation response generator  */
+/*-------------------------------*/
 func MakeResultResponse(status bool, errors []*model.Errors) (*model.Result) {
 	if len(errors) > 0 {
 		return &model.Result {
@@ -37,6 +43,9 @@ func MakeResultResponse(status bool, errors []*model.Errors) (*model.Result) {
 	}
 }
 
+/*-------------------------------*/
+/*   Query response generator    */
+/*-------------------------------*/
 func MakeUserInfoResponse(info *model.User, errors []*model.Errors) (*model.UserInfo) {
 	if len(errors) > 0 {
 		return &model.UserInfo{
