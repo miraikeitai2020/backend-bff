@@ -32,6 +32,6 @@ type DetourInfo struct {
 	Longitude	float64	`json:"longitude"`
 }
 
-type AddSpotResponse struct {
+type MutationResponse struct {
 	Status	bool	`json:"status"`
 }

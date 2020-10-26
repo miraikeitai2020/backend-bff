@@ -238,7 +238,7 @@ func MakeAddSpotRequest(name, image, desc string, latitude, longitude float64) (
 	return json.Marshal(request)
 }
 
-func MakeMutationResponseStruct(response []byte) (info model.AddSpotResponse) {
+func MakeMutationResponseStruct(response []byte) (info model.MutationResponse) {
 	json.Unmarshal(response, &info)
 	return
 }
