@@ -1,8 +1,10 @@
 package view
 
 import(
-	"github.com/miraikeitai2020/backend-bff/pkg/utils"
+	errgen "errors"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
 )
 
 /*-------------------------------*/
@@ -15,12 +17,12 @@ func MakeSignResponse(token string, errors []*model.Errors) (*model.Token) {
 			Errors: errors,
 		}
 	}
-	if token == "" {
+	/*if token == "" {
 		return &model.Token {
 			Value: "",
 			Errors: utils.MakeErrors(500, "Token value is empty."),
 		}
-	}
+	}*/
 	return &model.Token {
 		Value: token,
 		Errors: nil,
@@ -79,12 +81,12 @@ func MakeListResponse(list []*model.ArticleHeader, errors []*model.Errors) (*mod
 			Errors: errors,
 		}
 	}
-	if len(list) == 0 {
+	/*if len(list) == 0 {
 		return &model.List{
 			Articles: nil,
 			Errors: utils.MakeErrors(500, "list value is empty."),
 		}
-	}
+	}*/
 	return &model.List{
 		Articles: list,
 		Errors: errors,
@@ -98,38 +100,40 @@ func MakeGenresResponse(errors []*model.Errors, genres ...string) (*model.Genres
 			Errors: errors,
 		}
 	}
-	if len(genres) == 0 {
+	/*if len(genres) == 0 {
 		return &model.Genres{
 			Genres: nil,
 			Errors: utils.MakeErrors(500, "genre value is empty."),
 		}
-	}
+	}*/
 	return &model.Genres{
 		Genres: genres,
 		Errors: errors,
 	}
 }
 
-func MakeArticlesResponse(info []*model.ArticleHeader, errors []*model.Errors) (*model.Articles) {
+func MakeArticlesResponse(body []byte, errors []*model.Errors) (*model.Articles) {
+	info := service.ConvertResponseArticles(body)
 	if len(errors) > 0 {
 		return &model.Articles{
 			Articles: nil,
 			Errors: errors,
 		}
 	}
-	if len(info) == 0 {
+	if len(info.ArticleList) == 0 {
 		return &model.Articles{
 			Articles: nil,
-			Errors: utils.MakeErrors(500, "articles value is empty."),
+			Errors: service.MakeErrors(500, errgen.New("Articles is empty.")),
 		}
 	}
 	return &model.Articles{
-		Articles: info,
+		Articles: info.ArticleList,
 		Errors: nil,
 	}
 }
 
-func MakeArticleResponse(info *model.ArticleInfo, errors []*model.Errors) (*model.Article) {
+func MakeArticleResponse(body []byte, errors []*model.Errors) (*model.Article) {
+	info := service.ConvertResponseArticle(body)
 	if len(errors) > 0 {
 		return &model.Article{
 			Info: nil,
@@ -137,7 +141,7 @@ func MakeArticleResponse(info *model.ArticleInfo, errors []*model.Errors) (*mode
 		}
 	}
 	return &model.Article{
-		Info: info,
+		Info: &info.ArticleInfo,
 		Errors: errors,
 	}
 }
@@ -162,19 +166,21 @@ func MakeLogsResponse(info []*model.LogData, errors []*model.Errors) (*model.Log
 			Errors: errors,
 		}
 	}
-	if len(info) < 0 {
+	/*if len(info) < 0 {
 		return &model.Logs{
 			Logs: nil,
 			Errors: utils.MakeErrors(500, "logdata is empty."),
 		}
-	}
+	}*/
 	return &model.Logs{
 		Logs: info,
 		Errors: errors,
 	}
 }
 
-func MakeSpotsResponse(spot *model.Spot, detour []*model.Detour, errors []*model.Errors) (*model.Spots) {
+func MakeSpotsResponse(spot *dto.SpotResponse, detour *dto.DetourResponse, errors []*model.Errors) (*model.Spots) {
+	spots := service.ConvertSpotDtoToModel(*spot)
+	detours := service.ConvertDetourDtoToModel(*detour)
 	if len(errors) > 0 {
 		return &model.Spots{
 			Spot: nil,
@@ -183,8 +189,8 @@ func MakeSpotsResponse(spot *model.Spot, detour []*model.Detour, errors []*model
 		}
 	}
 	return &model.Spots{
-		Spot: spot,
-		Detour: detour,
+		Spot: spots,
+		Detour: detours,
 		Errors: errors,
 	}
 }
