@@ -153,7 +153,7 @@ func MakeLogsResponse(info []*model.LogData, errors []*model.Errors) (*model.Log
 			Errors: errors,
 		}
 	}
-	if len(info) > 0 {
+	if len(info) < 0 {
 		return &model.Logs{
 			Logs: nil,
 			Errors: utils.MakeErrors(500, "logdata is empty."),
