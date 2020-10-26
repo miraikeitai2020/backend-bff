@@ -1,90 +1,8 @@
 package utils
 
 import(
-	"fmt"
-	"context"
-	"encoding/json"
-
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
-
-var(
-	STATUS_CODE_400 = "Bad Request"
-	STATUS_CODE_403 = "Forbidden"
-	STATUS_CODE_500 = "Internal Server Error"
-)
-
-func ContextValueChecksum(ctx context.Context, keys ...string) (claims map[string]string, errors []*model.Errors) {
-	if len(keys) < 1 {
-		return
-	}
-
-	var value string
-	var ok bool
-	claims = make(map[string]string)
-
-	for _, key := range keys {
-		if value, ok = ctx.Value(key).(string); !ok {
-			errors = append(errors, MakeError(500, fmt.Sprintf("Faild get HTTP header value: %s", key)))
-		}
-		if value == "" {
-			errors = append(errors, MakeError(400, fmt.Sprintf("HTTP header value is empty: %s", key)))
-		}
-		claims[key] = value
-	}
-	return
-}
-
-func MakeError(code int, msg string) (errors *model.Errors) {
-	switch code {
-	case 400:
-		errors = &model.Errors{
-			Code: 400,
-			Message: STATUS_CODE_400,
-			Description: msg,
-		}
-	case 403:
-		errors = &model.Errors{
-			Code: 403,
-			Message: STATUS_CODE_403,
-			Description: msg,
-		}
-	case 500:
-		errors = &model.Errors{
-			Code: 500,
-			Message: STATUS_CODE_500,
-			Description: msg,
-		}
-	}
-	return
-}
-
-func MakeErrors(code int, msg string) ([]*model.Errors) {
-	var _error *model.Errors
-	switch code {
-	case 400:
-		_error = &model.Errors{
-			Code: 400,
-			Message: STATUS_CODE_400,
-			Description: msg,
-		}
-	case 403:
-		_error = &model.Errors{
-			Code: 403,
-			Message: STATUS_CODE_403,
-			Description: msg,
-		}
-	case 500:
-		_error = &model.Errors{
-			Code: 500,
-			Message: STATUS_CODE_500,
-			Description: msg,
-		}
-	}
-	return []*model.Errors{
-		_error,
-	}
-}
 
 func PackUserInfo(name string, year , month, day, gender int, genre ...string) (*model.User) {
 	var _genre []*string
@@ -131,60 +49,6 @@ func PackLogData(id, title string) (*model.LogData) {
 		ID: id,
 		Title: title,
 	}
-}
-
-func PackSpotInfo(id, name string, latitude, longitude float64) (*model.Spot) {
-	return &model.Spot{
-		ID: id,
-		Name: name,
-		Locate: &model.Locate{
-			Latitude: latitude,
-    		Longitude: longitude,
-		},
-	}
-}
-
-func PackDetourInfo(id, name, image, description string, latitude, longitude float64) (*model.Detour) {
-	return &model.Detour{
-		ID: id,
-		Name: name,
-		Image: image,
-		Description: description,
-		Locate: &model.Locate{
-			Latitude: latitude,
-			Longitude: longitude,
-		},
-	}
-}
-
-func MakeArticlesResponseStruct(response []byte) (info model.ArticlesResponse) {
-	json.Unmarshal(response, &info)
-	return
-}
-
-func MakeArticleResponseStruct(response []byte) (info model.ArticleInfo) {
-	json.Unmarshal(response, &info)
-	return	
-}
-
-func MakeAddLikeResponseStruct(response []byte) (info model.AddLikeResponse) {
-	json.Unmarshal(response, &info)
-	return
-}
-
-func MakeSpotResponseStruct(response []byte) (info model.SpotResponse) {
-	json.Unmarshal(response, &info)
-	return
-}
-
-func MakeDetourResponseStruct(response []byte) (info model.DetourResponse) {
-	json.Unmarshal(response, &info)
-	return
-}
-
-func MakeMutationResponseStruct(response []byte) (info model.MutationResponse) {
-	json.Unmarshal(response, &info)
-	return
 }
 
 func CastStringPointer(str string) *string {
