@@ -238,9 +238,18 @@ func MakeAddSpotRequest(name, image, desc string, latitude, longitude float64) (
 	return json.Marshal(request)
 }
 
-func MakeAddSpotResponseStruct(response []byte) (info model.AddSpotResponse) {
+func MakeMutationResponseStruct(response []byte) (info model.AddSpotResponse) {
 	json.Unmarshal(response, &info)
 	return
+}
+
+func MakeAddEvaluationRequestJSON(id string, emotion int, status bool) ([]byte, error) {
+	request := model.AddEvaluationRequest {
+		ID: id,
+		Emotion: emotion,
+		Status: status,
+	}
+	return json.Marshal(request)
 }
 
 func CastStringPointer(str string) *string {
