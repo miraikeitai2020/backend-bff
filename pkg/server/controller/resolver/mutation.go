@@ -1,19 +1,15 @@
 package resolver
 
 import(
-	"fmt"
-	"bytes"
 	"context"
-	"net/http"
-	"io/ioutil"
-	"github.com/miraikeitai2020/backend-bff/pkg/auth"
-	"github.com/miraikeitai2020/backend-bff/pkg/utils"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
 )
 
 func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
-	claims, errors := utils.ContextValueChecksum(ctx, "id", "pass")
+	claims, errors := service.CreateHeaderLoader(ctx, "id", "pass")
 	if len(errors) > 0 {
 		return view.MakeSignResponse("", errors), nil
 	}
@@ -21,16 +17,15 @@ func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
 	//TODO: Request Auth API
 	id := claims["id"]
 
-	token, err := auth.GenerateToken(id)
+	token, err := service.GenerateToken(id)
 	if err != nil {
-		errors = utils.MakeErrors(500, fmt.Sprintf("%v", err))
-		return view.MakeSignResponse("", errors), nil
+		return view.MakeSignResponse("", service.MakeErrors(500, err)), nil
 	}
 	return view.MakeSignResponse(token, nil), nil
 }
 
 func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, year int, month int, date int) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -39,7 +34,7 @@ func (r *mutationResolver) AddConstantUserInfo(ctx context.Context, gender int, 
 }
 
 func (r *mutationResolver) AddName(ctx context.Context, name string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -48,7 +43,7 @@ func (r *mutationResolver) AddName(ctx context.Context, name string) (*model.Res
 }
 
 func (r *mutationResolver) AddGenre(ctx context.Context, genre []*string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -57,45 +52,27 @@ func (r *mutationResolver) AddGenre(ctx context.Context, genre []*string) (*mode
 }
 
 func (r *mutationResolver) AddLike(ctx context.Context, articleid *string) (*model.Result, error) {
-	claims, errors := utils.ContextValueChecksum(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
-	m, err := auth.VerifyToken(claims["token"])
+	claims, err := service.VerifyToken(header["token"])
 	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(400, fmt.Sprintf("%v", err))), nil
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
-	body, err := utils.MakeArticleRequestJSON(*articleid)
+
+	client := dao.MakeAddLikeClient(*articleid)
+	body, err := client.Request(claims.Load("sub"))
 	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(400, fmt.Sprintf("%v", err))), nil
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
-	request, err := http.NewRequest("POST", apiPath.Record + "/mutation/add/like", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(400, fmt.Sprintf("%v", err))), nil
-	}
-	fmt.Println(m["sub"].(string))
-	request.Header.Set("UserID", m["sub"].(string))
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(400, fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
-	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(400, fmt.Sprintf("%v", err))), nil
-	}
-	info := utils.MakeAddLikeResponseStruct(body)
-	var stat bool
-	if info.Nice == 100 {
-		stat = false
-	}else{
-		stat = true
-	}
-	return view.MakeResultResponse(stat, errors), nil
+
+	info := service.ConvertResponseLike(body)
+	return view.MakeResultResponse(info.Status, errors), nil
 }
 
 func (r *mutationResolver) AddList(ctx context.Context, articleid *string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -104,7 +81,7 @@ func (r *mutationResolver) AddList(ctx context.Context, articleid *string) (*mod
 }
 
 func (r *mutationResolver) DelList(ctx context.Context, articleid *string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -113,7 +90,7 @@ func (r *mutationResolver) DelList(ctx context.Context, articleid *string) (*mod
 }
 
 func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *int, month *int, title *string, contents *string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -122,7 +99,7 @@ func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *
 }
 
 func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, comment *string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -131,7 +108,7 @@ func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, co
 }
 
 func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date string, title string, worktime string, concentration string) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -140,7 +117,7 @@ func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date st
 }
 
 func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
@@ -149,36 +126,30 @@ func (r *mutationResolver) AddSubscription(ctx context.Context) (*model.Result, 
 }
 
 func (r *mutationResolver) AddEvaluation(ctx context.Context, spotid string, emotion int, status bool) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
+	client := dao.MakeEvaluationClient(spotid, emotion, status)
+	body, err := client.Request()
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+	info := service.ConvertResponseMutation(body)
 
-	return view.MakeResultResponse(true, errors), nil
+	return view.MakeResultResponse(info.Status, errors), nil
 }
 
 func (r *mutationResolver) AddSpot(ctx context.Context, name string, description string, image string, latitude float64, longitude float64) (*model.Result, error) {
-	_, errors := utils.ContextValueChecksum(ctx, "token")
+	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
 	}
-	body, err := utils.MakeAddSpotRequest(name, "", description, latitude, longitude)
+	client := dao.MakeAddSpotClient(name, image, description, latitude, longitude)
+	body, err := client.Request()
 	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
-	request, err := http.NewRequest("POST", apiPath.Spot + "/mutation/add/spot", bytes.NewBuffer(body))
-	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	body, err = ioutil.ReadAll(response.Body)
-    if err != nil {
-		return view.MakeResultResponse(false, utils.MakeErrors(500, fmt.Sprintf("%v", err))), nil
-	}
-	info := utils.MakeAddSpotResponseStruct(body)
+	info := service.ConvertResponseMutation(body)
 	return view.MakeResultResponse(info.Status, errors), nil
 }
