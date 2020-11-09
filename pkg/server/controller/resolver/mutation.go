@@ -91,9 +91,19 @@ func (r *mutationResolver) DelList(ctx context.Context, articleid *string) (*mod
 }
 
 func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *int, month *int, title *string, contents *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.MakeAddRequestClient(*genre, *year, *month, *title, *contents)
+	if _, err = client.Request(claims.Load("id")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
