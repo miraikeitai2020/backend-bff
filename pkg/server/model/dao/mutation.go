@@ -56,7 +56,42 @@ func (info *addComment) Request(arg ...string) ([]byte, error) {
 	}
 	request, err := http.NewRequest(
 		"POST",
-		fmt.Sprintf(RECORD_API_MUTATION_LIKE, pathOf.Record),
+		fmt.Sprintf(MEMORY_API_MUTATION_COMMENT, pathOf.Memory),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("UserID", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
+
+type addRequest struct {
+	Genre    string `json:"genre"`
+	Year     int    `json:"year"`
+	Month    int    `json:"month"`
+	Title    string `json:"title"`
+	Contents string `json:"contents"`
+}
+
+func MakeAddRequestClient(genre string, year, month int, title, contents string) AccessResourceRepository {
+	return &addRequest{Genre: genre, Year: year, Month: month, Title: title, Contents: contents}
+}
+
+func (info *addRequest) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf(MEMORY_API_MUTATION_REQUEST, pathOf.Memory),
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
