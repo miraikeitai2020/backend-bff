@@ -1,11 +1,12 @@
 package resolver
 
-import(
+import (
 	"context"
+
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
-	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 )
 
 func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
@@ -99,9 +100,19 @@ func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *
 }
 
 func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, comment *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.MakeAddCommentClient(*articleid, *comment)
+	if _, err = client.Request(claims.Load("id")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
