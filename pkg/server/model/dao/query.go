@@ -133,6 +133,35 @@ func (info *list) Request(arg ...string) ([]byte, error) {
 }
 
 /* Access Log API */
+type logRequest struct {
+}
+
+func NewLogClient() AccessResourceRepository {
+	return &logRequest{}
+}
+
+func (info *logRequest) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"GET",
+		fmt.Sprintf(LOG_API_QUERY_LOG, pathOf.Log),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("x-token", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
 
 /* Access Spot API */
 // spot

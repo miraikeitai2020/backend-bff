@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"time"
 
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
@@ -147,16 +146,15 @@ func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, erro
 		return view.MakeLogResponse(nil, errors), nil
 	}
 
-	info := utils.PackLogInfo(
-		"1919810", "サービス残業", time.Now().String(), 810,
-		[]float64{
-			11.4,
-			51.4,
-			191.9,
-			81.0,
-		},
-	)
-	return view.MakeLogResponse(info, errors), nil
+	client := dao.NewLogClient()
+	body, err := client.Request(logid)
+	if err != nil {
+		return view.MakeLogResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	log := service.ConvertResponseLog(body)
+
+	return view.MakeLogResponse(&log.Info, errors), nil
 }
 
 func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
