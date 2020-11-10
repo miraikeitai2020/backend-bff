@@ -31,6 +31,23 @@ func ConvertResponseList(response []byte) (info dto.ListResponse) {
 	return
 }
 
+func ConvertResponseLog(response []byte) (info dto.LogResponse) {
+	var logInfo struct {
+		Title         string    `json:"LogName"`
+		Date          string    `json:"Date"`
+		Worktime      int       `json:"WorkTime"`
+		Concentration []float64 `json:"Concentration"`
+	}
+	json.Unmarshal(response, &logInfo)
+	info.Info = model.LogInfo{
+		Title:         logInfo.Title,
+		Date:          logInfo.Date,
+		Worktime:      logInfo.Worktime,
+		Concentration: logInfo.Concentration,
+	}
+	return
+}
+
 func ConvertResponseDetour(response []byte) (info dto.DetourResponse) {
 	json.Unmarshal(response, &info)
 	return
