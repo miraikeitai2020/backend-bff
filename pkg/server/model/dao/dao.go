@@ -15,7 +15,7 @@ type apiPath struct {
 	Record     string `envconfig:"RECORD_API" default:""`
 	Memory     string `envconfig:"MEMORY_API" default:""`
 	Collection string `envconfig:"COLLECTION_API"`
-	Log        string `envconfig:"LOG_API" default:""`
+	Log        string `envconfig:"LOG_API" default:"https://merihariko.herokuapp.com"`
 	Spot       string `envconfig:"SPOT_API" default:""`
 	Evaluation string `envconfig:"EVALUATION_API" default:""`
 }
