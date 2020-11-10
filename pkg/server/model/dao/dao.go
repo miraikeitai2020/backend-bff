@@ -15,7 +15,7 @@ type apiPath struct {
 	Record     string `envconfig:"RECORD_API" default:""`
 	Memory     string `envconfig:"MEMORY_API" default:""`
 	Collection string `envconfig:"COLLECTION_API"`
-	Log        string `envconfig:"LOG_API"`
+	Log        string `envconfig:"LOG_API" default:"https://merihariko.herokuapp.com"`
 	Spot       string `envconfig:"SPOT_API" default:""`
 	Evaluation string `envconfig:"EVALUATION_API" default:""`
 }
@@ -41,6 +41,9 @@ var (
 
 	COLLECTION_API_QUERY_LIST = "%s/list/send"
 	COLLECTION_API_QUERY_LIKE = "%s/list/change"
+
+	LOG_API_QUERY_LOG  = "%s/api/log"
+	LOG_API_QUERY_LOGS = "%s/api/logs"
 
 	SPOT_API_QUERY_SPOT          = "%s/query/spot"
 	SPOT_API_QUERY_DETOUR        = "%s/query/detour"

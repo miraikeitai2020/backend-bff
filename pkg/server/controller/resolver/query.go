@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"time"
 
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
@@ -147,39 +146,37 @@ func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, erro
 		return view.MakeLogResponse(nil, errors), nil
 	}
 
-	info := utils.PackLogInfo(
-		"1919810", "サービス残業", time.Now().String(), 810,
-		[]float64{
-			11.4,
-			51.4,
-			191.9,
-			81.0,
-		},
-	)
-	return view.MakeLogResponse(info, errors), nil
+	client := dao.NewLogClient()
+	body, err := client.Request(logid)
+	if err != nil {
+		return view.MakeLogResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	log := service.ConvertResponseLog(body)
+
+	return view.MakeLogResponse(&log.Info, errors), nil
 }
 
 func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLogsResponse(nil, errors), nil
 	}
 
-	info := []*model.LogData{
-		utils.PackLogData(
-			"114514",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"1919",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"810",
-			"サービス残業",
-		),
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	return view.MakeLogsResponse(info, errors), nil
+
+	client := dao.NewLogsClient()
+	body, err := client.Request(claims.Load("sub"))
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	info := service.ConvertResponseLogs(body)
+
+	return view.MakeLogsResponse(info.Data, errors), nil
 }
 
 func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude float64, worktime int, emotion int) (*model.Spots, error) {

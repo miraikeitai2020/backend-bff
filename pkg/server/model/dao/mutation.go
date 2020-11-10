@@ -110,6 +110,39 @@ func (info *addRequest) Request(arg ...string) ([]byte, error) {
 /* Access Collection API */
 
 /* Access Log API */
+type addLog struct {
+	Name    string    `json:"logname"`
+	Date    string    `json:"datetime"`
+	Wrok    int       `json:"worktime"`
+	Concent []float64 `json:"concentration"`
+}
+
+func NewAddLogClient(name, date string, work int, concent []float64) AccessResourceRepository {
+	return &addLog{Name: name, Date: date, Wrok: work, Concent: concent}
+}
+
+func (info *addLog) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf(LOG_API_QUERY_LOG, pathOf.Log),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("x-token", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
 
 /* Access Spot API */
 type addSpot struct {
