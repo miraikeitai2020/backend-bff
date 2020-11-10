@@ -128,10 +128,20 @@ func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, co
 	return view.MakeResultResponse(true, errors), nil
 }
 
-func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date string, title string, worktime string, concentration string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date string, title string, worktime int, concentration []float64) (*model.Result, error) {
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.NewAddLogClient(title, date, worktime, concentration)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
