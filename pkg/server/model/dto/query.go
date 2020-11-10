@@ -20,6 +20,10 @@ type LogResponse struct {
 	Info model.LogInfo
 }
 
+type LogsResponse struct {
+	Data []*model.LogData
+}
+
 type SpotResponse struct {
 	Spot SpotInfo `json:"spot"`
 }

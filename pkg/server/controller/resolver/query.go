@@ -158,26 +158,25 @@ func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, erro
 }
 
 func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLogsResponse(nil, errors), nil
 	}
 
-	info := []*model.LogData{
-		utils.PackLogData(
-			"114514",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"1919",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"810",
-			"サービス残業",
-		),
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	return view.MakeLogsResponse(info, errors), nil
+
+	client := dao.NewLogsClient()
+	body, err := client.Request(claims.Load("sub"))
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	info := service.ConvertResponseLogs(body)
+
+	return view.MakeLogsResponse(info.Data, errors), nil
 }
 
 func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude float64, worktime int, emotion int) (*model.Spots, error) {
