@@ -1,6 +1,6 @@
 package dto
 
-import(
+import (
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 )
 
@@ -12,15 +12,19 @@ type ArticleResponse struct {
 	ArticleInfo model.ArticleInfo
 }
 
+type ListResponse struct {
+	Articles []*model.ArticleHeader
+}
+
 type SpotResponse struct {
 	Spot SpotInfo `json:"spot"`
 }
 
 type SpotInfo struct {
-	ID			string	`json:"id"`
-	Name		string	`json:"name"`
-	Latitude	float64	`json:"latitude"`
-	Longitude	float64	`json:"longitude"`
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type DetourResponse struct {
@@ -28,10 +32,10 @@ type DetourResponse struct {
 }
 
 type DetourInfo struct {
-	ID			string	`json:"id"`
-	Name		string	`json:"name"`
-	Image		string	`json:"image"`
-	Description	string	`json:"description"`
-	Latitude	float64	`json:"latitude"`
-	Longitude	float64	`json:"longitude"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Image       string  `json:"image"`
+	Description string  `json:"description"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
 }

@@ -102,7 +102,7 @@ func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *
 	}
 
 	client := dao.MakeAddRequestClient(*genre, *year, *month, *title, *contents)
-	if _, err = client.Request(claims.Load("id")); err != nil {
+	if _, err = client.Request(claims.Load("sub")); err != nil {
 		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
@@ -121,7 +121,7 @@ func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, co
 	}
 
 	client := dao.MakeAddCommentClient(*articleid, *comment)
-	if _, err = client.Request(claims.Load("id")); err != nil {
+	if _, err = client.Request(claims.Load("sub")); err != nil {
 		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 

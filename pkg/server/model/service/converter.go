@@ -1,7 +1,8 @@
 package service
 
-import(
+import (
 	"encoding/json"
+
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
 )
@@ -21,18 +22,27 @@ func ConvertResponseSpot(response []byte) (info dto.SpotResponse) {
 	return
 }
 
+func ConvertResponseList(response []byte) (info dto.ListResponse) {
+	var articleList []model.ArticleHeader
+	json.Unmarshal(response, &articleList)
+	for i := 0; i < len(articleList); i++ {
+		info.Articles = append(info.Articles, &articleList[i])
+	}
+	return
+}
+
 func ConvertResponseDetour(response []byte) (info dto.DetourResponse) {
 	json.Unmarshal(response, &info)
 	return
 }
 
-func ConvertResponseLike(response []byte) (dto.MutationResponse) {
+func ConvertResponseLike(response []byte) dto.MutationResponse {
 	var info dto.LikeResponse
 	var status bool
 	json.Unmarshal(response, &info)
 	if info.Nice == 100 {
 		status = false
-	}else{
+	} else {
 		status = true
 	}
 	return dto.MutationResponse{Status: status}
@@ -44,13 +54,13 @@ func ConvertResponseMutation(response []byte) (info dto.MutationResponse) {
 }
 
 // type converter
-func ConvertSpotDtoToModel(d dto.SpotResponse) (*model.Spot) {
+func ConvertSpotDtoToModel(d dto.SpotResponse) *model.Spot {
 	return &model.Spot{
-		ID: d.Spot.ID,
+		ID:   d.Spot.ID,
 		Name: d.Spot.Name,
 		Locate: &model.Locate{
-			Latitude: d.Spot.Latitude,
-    		Longitude: d.Spot.Longitude,
+			Latitude:  d.Spot.Latitude,
+			Longitude: d.Spot.Longitude,
 		},
 	}
 }
@@ -60,12 +70,12 @@ func ConvertDetourDtoToModel(d dto.DetourResponse) (detour []*model.Detour) {
 		detour = append(
 			detour,
 			&model.Detour{
-				ID: v.ID,
-				Name: v.Name,
-				Image: v.Image,
+				ID:          v.ID,
+				Name:        v.Name,
+				Image:       v.Image,
 				Description: v.Description,
 				Locate: &model.Locate{
-					Latitude: v.Latitude,
+					Latitude:  v.Latitude,
 					Longitude: v.Longitude,
 				},
 			},

@@ -39,6 +39,9 @@ var (
 	MEMORY_API_MUTATION_COMMENT = "%s/comment/add"
 	MEMORY_API_MUTATION_REQUEST = "%s/request/save"
 
+	COLLECTION_API_QUERY_LIST = "%s/list/send"
+	COLLECTION_API_QUERY_LIKE = "%s/list/change"
+
 	SPOT_API_QUERY_SPOT          = "%s/query/spot"
 	SPOT_API_QUERY_DETOUR        = "%s/query/detour"
 	SPOT_API_MUTATION_EVALUATION = "%s/mutation/evaluate/spot"
