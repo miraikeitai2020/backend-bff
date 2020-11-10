@@ -1,6 +1,6 @@
 package resolver
 
-import(
+import (
 	"github.com/miraikeitai2020/backend-bff/pkg/bff"
 )
 
