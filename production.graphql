@@ -45,6 +45,8 @@ type ArticleHeader {
     title: String!
     ImagePath: String!
     tags: [String]
+    synopsis: String!
+    nice: Int!
 }
 
 type Genres {
@@ -63,13 +65,13 @@ type Article {
 }
 
 type ArticleInfo {
-    id: String!
     title: String!
     imagePath: String!
     nice: Int!
     context: String!
     userStatus: ArticleUserInfo
-    comment: [Comment]
+    tags: [String]
+    comments: [Comment]
 }
 
 type ArticleUserInfo {
@@ -78,9 +80,9 @@ type ArticleUserInfo {
 }
 
 type Comment {
-    name: String!
-    image: String!
-    comment: String!
+    userName: String!
+    userImage: String!
+    contents: String!
 }
 
 # めりはりこ
