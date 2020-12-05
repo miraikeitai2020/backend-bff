@@ -1,13 +1,12 @@
 package resolver
 
-import(
-	"time"
+import (
 	"context"
-	"github.com/miraikeitai2020/backend-bff/pkg/utils"
-	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
+	"github.com/miraikeitai2020/backend-bff/pkg/utils"
 )
 
 func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
@@ -18,7 +17,7 @@ func (r *queryResolver) Signin(ctx context.Context) (*model.Token, error) {
 
 	//TODO: Request Auth API
 	id := claims["id"]
-	
+
 	token, err := service.GenerateToken(id)
 	if err != nil {
 		return view.MakeSignResponse("", service.MakeErrors(500, err)), nil
@@ -42,45 +41,32 @@ func (r *queryResolver) UserInfo(ctx context.Context) (*model.UserInfo, error) {
 	return view.MakeUserInfoResponse(info, errors), nil
 }
 
-func (r *queryResolver) Like(ctx context.Context, articleid *string) (*model.Like, error) {
+func (r *queryResolver) Nice(ctx context.Context, nice *int) (*model.Nice, error) {
 	_, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
-		return view.MakeLikeResponse(false, errors), nil
+		return view.MakeNiceResponse(nil, errors), nil
 	}
-
-	return view.MakeLikeResponse(true, errors), nil
+	info := utils.PackNiceData(nice)
+	return view.MakeNiceResponse(info, errors), nil
 }
 
 func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeListResponse(nil, errors), nil
 	}
 
-	info := []*model.ArticleHeader {
-		utils.PackArticleHeaderInfo(
-			"SCP-1049-JP", "SCP-1049-JP", "http://scp-jp.wdfiles.com/local--files/scp-1049-jp/kakasi.jpg",
-			"ドラマ",
-			"音楽",
-			"その他",
-			"政治",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1104-JP", "SCP-1104-JP", "http://scp-jp.wdfiles.com/local--files/scp-1104-jp/SCP-1104-JP.jpg",
-			"ドラマ",
-			"音楽",
-			"その他",
-			"政治",
-		),
-		utils.PackArticleHeaderInfo(
-			"SCP-1955-JP", "SCP-1955-JP", "http://scp-jp.wdfiles.com/local--files/scp-1955-jp/Japanese-wolf.png",
-			"ドラマ",
-			"音楽",
-			"その他",
-			"政治",
-		),
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeListResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	return view.MakeListResponse(info, errors), nil
+	client := dao.MakeListClient()
+	body, err := client.Request(claims.Load("sub"))
+	if err != nil {
+		return view.MakeListResponse(nil, service.MakeErrors(500, err)), nil
+	}
+	info := service.ConvertResponseList(body)
+	return view.MakeListResponse(info.Articles, errors), nil
 }
 
 func (r *queryResolver) Genres(ctx context.Context) (*model.Genres, error) {
@@ -107,8 +93,8 @@ func (r *queryResolver) Articles(ctx context.Context, genre string, year *int, m
 	// Request Record API //
 	client := dao.MakeArticlesClient(genre, year, month)
 	body, err := client.Request()
-    if err != nil {
-        return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
+	if err != nil {
+		return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
 	}
 
 	// Retrun Response //
@@ -120,14 +106,13 @@ func (r *queryResolver) ArticlesFromTag(ctx context.Context, tag string) (*model
 	if len(errors) > 0 {
 		return view.MakeArticlesResponse(nil, errors), nil
 	}
-
 	// Request Record API //
 	client := dao.MakeArticlesFromTagClient(tag)
 	body, err := client.Request()
-    if err != nil {
-        return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
+	if err != nil {
+		return view.MakeArticlesResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	
+
 	// Retrun Response //
 	return view.MakeArticlesResponse(body, errors), nil
 }
@@ -144,10 +129,9 @@ func (r *queryResolver) Article(ctx context.Context, articleid string) (*model.A
 
 	client := dao.MakeArticleClient(articleid)
 	body, err := client.Request(claims.Load("sub"))
-    if err != nil {
-        return view.MakeArticleResponse(nil, service.MakeErrors(500, err)), nil
+	if err != nil {
+		return view.MakeArticleResponse(nil, service.MakeErrors(500, err)), nil
 	}
-
 	return view.MakeArticleResponse(body, errors), nil
 }
 
@@ -157,39 +141,37 @@ func (r *queryResolver) Log(ctx context.Context, logid string) (*model.Log, erro
 		return view.MakeLogResponse(nil, errors), nil
 	}
 
-	info := utils.PackLogInfo(
-		"1919810", "サービス残業", time.Now().String(), 810,
-		[]float64{
-			11.4,
-			51.4,
-			191.9,
-			81.0,
-		},
-	)
-	return view.MakeLogResponse(info, errors), nil
+	client := dao.NewLogClient()
+	body, err := client.Request(logid)
+	if err != nil {
+		return view.MakeLogResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	log := service.ConvertResponseLog(body)
+
+	return view.MakeLogResponse(&log.Info, errors), nil
 }
 
 func (r *queryResolver) Logs(ctx context.Context) (*model.Logs, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeLogsResponse(nil, errors), nil
 	}
 
-	info := []*model.LogData{
-		utils.PackLogData(
-			"114514",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"1919",
-			"サービス残業",
-		),
-		utils.PackLogData(
-			"810",
-			"サービス残業",
-		),
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
 	}
-	return view.MakeLogsResponse(info, errors), nil
+
+	client := dao.NewLogsClient()
+	body, err := client.Request(claims.Load("sub"))
+	if err != nil {
+		return view.MakeLogsResponse(nil, service.MakeErrors(500, err)), nil
+	}
+
+	info := service.ConvertResponseLogs(body)
+
+	return view.MakeLogsResponse(info.Data, errors), nil
 }
 
 func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude float64, worktime int, emotion int) (*model.Spots, error) {
@@ -199,7 +181,7 @@ func (r *queryResolver) Spots(ctx context.Context, latitude float64, longitude f
 	}
 	client := dao.MakeSpotClient(latitude, longitude, worktime, emotion)
 	body, err := client.Request()
-    if err != nil {
+	if err != nil {
 		return view.MakeSpotsResponse(nil, nil, service.MakeErrors(500, err)), nil
 	}
 	spot := service.ConvertResponseSpot(body)

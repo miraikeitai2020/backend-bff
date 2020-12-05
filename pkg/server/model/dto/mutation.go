@@ -1,7 +1,9 @@
 package dto
 
-type LikeResponse struct {
-	Nice int `json:"nice"`
+import "github.com/miraikeitai2020/backend-bff/pkg/server/model"
+
+type NiceResponse struct {
+	NiceInfo model.Nice `json:"nice"`
 }
 
 type MutationResponse struct {

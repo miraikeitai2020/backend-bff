@@ -30,8 +30,8 @@ type Date {
     day: Int!
 }
 
-type Like {
-    status: Boolean! 
+type Nice {
+    nice: Int!
     errors: [ERRORS]
 }
 
@@ -45,6 +45,8 @@ type ArticleHeader {
     title: String!
     ImagePath: String!
     tags: [String]
+    synopsis: String!
+    nice: Int!
 }
 
 type Genres {
@@ -63,13 +65,13 @@ type Article {
 }
 
 type ArticleInfo {
-    id: String!
     title: String!
     imagePath: String!
     nice: Int!
     context: String!
     userStatus: ArticleUserInfo
-    comment: [Comment]
+    tags: [String]
+    comments: [Comment]
 }
 
 type ArticleUserInfo {
@@ -78,9 +80,9 @@ type ArticleUserInfo {
 }
 
 type Comment {
-    name: String!
-    image: String!
-    comment: String!
+    userName: String!
+    userImage: String!
+    contents: String!
 }
 
 # めりはりこ
@@ -155,7 +157,7 @@ type Query {
     # Re:sns
     ## ユーザー情報取得
     userInfo: UserInfo!
-    like(articleid: String): Like!
+    nice(nice: Int): Nice!
     list: List!
     ## 記事取得
     genres: Genres!
@@ -180,14 +182,14 @@ type Mutation {
     addName(name: String!): Result!
     addGenre(genre: [String]!): Result!
     ## リスト管理
-    addLike(articleid: String): Result!
+    addNice(articleid: String): Nice!
     addList(articleid: String): Result!
     delList(articleid: String): Result!
     addRequest(genre: String, year: Int, month: Int, title: String, contents: String): Result!
     ## コメント登録
     addComment(articleid: String, comment: String): Result!
     # めりはりこ
-    addNewLogData(id: String!, date: String!, title: String!, worktime: String!, concentration: String!): Result!
+    addNewLogData(id: String!, date: String!, title: String!, worktime: Int!, concentration: [Float!]!): Result!
     addSubscription: Result!
     # 未知しるべ
     addEvaluation(spotid: String!, emotion: Int!, status: Boolean!): Result!

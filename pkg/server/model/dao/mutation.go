@@ -1,29 +1,63 @@
 package dao
 
-import(
-	"fmt"
+import (
 	"bytes"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
 /* Access Record API */
 // addLike
-type addLike struct {
-	ID	string	`json:"articleID"`
+type addNice struct {
+	ID string `json:"articleID"`
 }
-func MakeAddLikeClient(id string) AccessResourceRepository {
-	return &addLike{ID: id}
+
+func MakeAddNiceClient(id string) AccessResourceRepository {
+	return &addNice{ID: id}
 }
-func (info *addLike) Request(arg ...string) ([]byte, error) {
+func (info *addNice) Request(arg ...string) ([]byte, error) {
 	body, err := json.Marshal(info)
 	if err != nil {
 		return nil, err
 	}
 	request, err := http.NewRequest(
-		"POST", 
-		fmt.Sprintf(RECORD_API_MUTATION_LIKE, pathOf.Record), 
+		"PUT",
+		fmt.Sprintf(RECORD_API_MUTATION_LIKE, pathOf.Record),
+		bytes.NewBuffer(body),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("UserID", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
+
+/* Access Memory API */
+type addComment struct {
+	ID      string `json:"articleID"`
+	Comment string `json:"contents"`
+}
+
+func MakeAddCommentClient(id, comment string) AccessResourceRepository {
+	return &addComment{ID: id, Comment: comment}
+}
+func (info *addComment) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf(MEMORY_API_MUTATION_COMMENT, pathOf.Memory),
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
@@ -38,20 +72,149 @@ func (info *addLike) Request(arg ...string) ([]byte, error) {
 	}
 	return ioutil.ReadAll(response.Body)
 }
-/* Access Memory API */
+
+type addRequest struct {
+	Genre    string `json:"genre"`
+	Year     int    `json:"year"`
+	Month    int    `json:"month"`
+	Title    string `json:"title"`
+	Contents string `json:"contents"`
+}
+
+func MakeAddRequestClient(genre string, year, month int, title, contents string) AccessResourceRepository {
+	return &addRequest{Genre: genre, Year: year, Month: month, Title: title, Contents: contents}
+}
+
+func (info *addRequest) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf(MEMORY_API_MUTATION_REQUEST, pathOf.Memory),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("UserID", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
 
 /* Access Collection API */
+type addList struct {
+	ID string `json:"articleID"`
+}
+
+func MakeAddListClient(id string) AccessResourceRepository {
+	return &addList{ID: id}
+}
+
+func (info *addList) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"PUT",
+		fmt.Sprintf(COLLECTION_API_QUERY_ADDLIST, pathOf.Collection),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("UserID", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
+
+type delList struct {
+	ID string `json:"articleID"`
+}
+
+func MakeDelListClient(id string) AccessResourceRepository {
+	return &delList{ID: id}
+}
+
+func (info *delList) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"DELETE",
+		fmt.Sprintf(COLLECTION_API_QUERY_DELETELIST, pathOf.Collection),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("UserID", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
 
 /* Access Log API */
+type addLog struct {
+	Name    string    `json:"logname"`
+	Date    string    `json:"datetime"`
+	Wrok    int       `json:"worktime"`
+	Concent []float64 `json:"concentration"`
+}
+
+func NewAddLogClient(name, date string, work int, concent []float64) AccessResourceRepository {
+	return &addLog{Name: name, Date: date, Wrok: work, Concent: concent}
+}
+
+func (info *addLog) Request(arg ...string) ([]byte, error) {
+	body, err := json.Marshal(info)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf(LOG_API_QUERY_LOG, pathOf.Log),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("x-token", arg[0])
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(response.Body)
+}
 
 /* Access Spot API */
 type addSpot struct {
-	Name		string	`json:"name"`
-	Image		string	`json:"image"`
-	Description	string	`json:"description"`
-	Latitude	float64	`json:"latitude"`
-	Longitude	float64	`json:"longitude"`
+	Name        string  `json:"name"`
+	Image       string  `json:"image"`
+	Description string  `json:"description"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
 }
+
 func MakeAddSpotClient(name, image, desc string, latitude, longitude float64) AccessResourceRepository {
 	return &addSpot{Name: name, Image: image, Description: desc, Latitude: latitude, Longitude: longitude}
 }
@@ -62,7 +225,7 @@ func (info *addSpot) Request(arg ...string) ([]byte, error) {
 	}
 	request, err := http.NewRequest(
 		"POST",
-		fmt.Sprintf(SPOT_API_MUTATION_ADD_SPOT, pathOf.Spot), 
+		fmt.Sprintf(SPOT_API_MUTATION_ADD_SPOT, pathOf.Spot),
 		bytes.NewBuffer(body),
 	)
 	if err != nil {
@@ -79,10 +242,11 @@ func (info *addSpot) Request(arg ...string) ([]byte, error) {
 
 /* Access Evaluation API */
 type evaluation struct {
-	ID		string	`json:"id"`
-	Emotion	int		`json:"emotion"`
-	Status	bool	`json:"status"`
+	ID      string `json:"id"`
+	Emotion int    `json:"emotion"`
+	Status  bool   `json:"status"`
 }
+
 func MakeEvaluationClient(id string, emotion int, stat bool) AccessResourceRepository {
 	return &evaluation{ID: id, Emotion: emotion, Status: stat}
 }
@@ -93,7 +257,7 @@ func (info *evaluation) Request(arg ...string) ([]byte, error) {
 	}
 	request, err := http.NewRequest(
 		"POST",
-		fmt.Sprintf(SPOT_API_MUTATION_EVALUATION, pathOf.Evaluation), 
+		fmt.Sprintf(SPOT_API_MUTATION_EVALUATION, pathOf.Evaluation),
 		bytes.NewBuffer(body),
 	)
 	if err != nil {

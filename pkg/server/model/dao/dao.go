@@ -1,44 +1,55 @@
 package dao
 
-import(
-	"log"
+import (
 	"fmt"
-	"net/http"
 	"io/ioutil"
+	"log"
+	"net/http"
+
 	"github.com/kelseyhightower/envconfig"
 )
 
 type apiPath struct {
-	Auth		string	`envconfig:"AUTH_API"`
-	User		string	`envconfig:"USER_API"`
-	Record		string	`envconfig:"RECORD_API" default:""`
-	Memory		string	`envconfig:"MEMORY_API"`
-	Collection	string	`envconfig:"COLLECTION_API"`
-	Log			string	`envconfig:"LOG_API"`
-	Spot		string	`envconfig:"SPOT_API" default:""`
-	Evaluation	string	`envconfig:"EVALUATION_API" default:""`
+	Auth       string `envconfig:"AUTH_API" default"https://my-backendauth.herokuapp.com"`
+	User       string `envconfig:"USER_API"`
+	Record     string `envconfig:"RECORD_API" default:"https://my-record.herokuapp.com"`
+	Memory     string `envconfig:"MEMORY_API" default:"https://backend-memory.herokuapp.com"`
+	Collection string `envconfig:"COLLECTION_API" default:"https://backend-collection.herokuapp.com"`
+	Log        string `envconfig:"LOG_API" default:"https://merihariko.herokuapp.com"`
+	Spot       string `envconfig:"SPOT_API" default:""`
+	Evaluation string `envconfig:"EVALUATION_API" default:""`
 }
 
 type AccessResourceRepository interface {
 	Request(arg ...string) ([]byte, error)
 }
 
-var(
+var (
 	pathOf apiPath
 
 	// API RESOURCE PATH
-	AUTH_API_QUERY_SIGNIN = "%s/query/signin"
+	AUTH_API_QUERY_SIGNIN    = "%s/query/signin"
 	AUTH_API_MUTATION_SIGNUP = "%s/mutation/signup"
 
-	RECORD_API_QUERY_ARTICLES = "%s/query/articles"
-	RECORD_API_QUERY_TAG_ARTICLES = "%s/query/tag/articles"
-	RECORD_API_QUERY_ARTICLE = "%s/query/article"
-	RECORD_API_MUTATION_LIKE = "%s/mutation/add/like"
+	RECORD_API_QUERY_ARTICLES     = "%s/read/articles"
+	RECORD_API_QUERY_TAG_ARTICLES = "%s/read/tag/articles"
+	RECORD_API_QUERY_ARTICLE      = "%s/read/article"
+	RECORD_API_MUTATION_LIKE      = "%s/update/add/like"
 
-	SPOT_API_QUERY_SPOT = "%s/query/spot"
-	SPOT_API_QUERY_DETOUR = "%s/query/detour"
+	MEMORY_API_MUTATION_COMMENT = "%s/create/comment"
+	MEMORY_API_MUTATION_REQUEST = "%s/create/request"
+
+	COLLECTION_API_QUERY_READLIST = "%s/read/list"
+	COLLECTION_API_QUERY_ADDLIST = "%s/create/list"
+	COLLECTION_API_QUERY_DELETELIST = "%s/delete/list"
+
+	LOG_API_QUERY_LOG  = "%s/api/log"
+	LOG_API_QUERY_LOGS = "%s/api/logs"
+
+	SPOT_API_QUERY_SPOT          = "%s/query/spot"
+	SPOT_API_QUERY_DETOUR        = "%s/query/detour"
 	SPOT_API_MUTATION_EVALUATION = "%s/mutation/evaluate/spot"
-	SPOT_API_MUTATION_ADD_SPOT = "%s/mutation/add/spot"
+	SPOT_API_MUTATION_ADD_SPOT   = "%s/mutation/add/spot"
 )
 
 func init() {
@@ -50,6 +61,7 @@ func init() {
 /* Access Sign API */
 type sign struct {
 }
+
 func MakeSignClient() AccessResourceRepository {
 	return &sign{}
 }
@@ -81,4 +93,3 @@ func (info *sign) Request(arg ...string) ([]byte, error) {
 }
 
 /* Access User API */
-

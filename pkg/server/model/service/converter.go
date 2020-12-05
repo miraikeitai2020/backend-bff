@@ -1,6 +1,6 @@
 package service
 
-import(
+import (
 	"encoding/json"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
@@ -12,7 +12,7 @@ func ConvertResponseArticles(response []byte) (info dto.ArticlesResponse) {
 }
 
 func ConvertResponseArticle(response []byte) (info dto.ArticleResponse) {
-	json.Unmarshal(response, &info.ArticleInfo)
+	json.Unmarshal(response, &info)
 	return
 }
 
@@ -21,21 +21,59 @@ func ConvertResponseSpot(response []byte) (info dto.SpotResponse) {
 	return
 }
 
+func ConvertResponseList(response []byte) (info dto.ListResponse) {
+	json.Unmarshal(response, &info)
+	//var articleList []model.ArticleHeader
+	//fmt.Println(string(response))
+	//json.Unmarshal(response, &articleList)
+	//for i := 0; i < len(articleList); i++ {
+	//	info.Articles = append(info.Articles, &articleList[i])
+	//}
+	return
+}
+
+func ConvertResponseLogs(response []byte) (info dto.LogsResponse) {
+	var data struct {
+		Logs []struct {
+			ID    string `json:"LogID"`
+			Title string `json:"LogName"`
+		} `json:"Logs"`
+	}
+	json.Unmarshal(response, &data)
+	for i := 0; i < len(data.Logs); i++ {
+		info.Data = append(info.Data, &model.LogData{
+			ID:    data.Logs[i].ID,
+			Title: data.Logs[i].Title,
+		})
+	}
+	return
+}
+
+func ConvertResponseLog(response []byte) (info dto.LogResponse) {
+	var logInfo struct {
+		Title         string    `json:"LogName"`
+		Date          string    `json:"Date"`
+		Worktime      int       `json:"WorkTime"`
+		Concentration []float64 `json:"Concentration"`
+	}
+	json.Unmarshal(response, &logInfo)
+	info.Info = model.LogInfo{
+		Title:         logInfo.Title,
+		Date:          logInfo.Date,
+		Worktime:      logInfo.Worktime,
+		Concentration: logInfo.Concentration,
+	}
+	return
+}
+
 func ConvertResponseDetour(response []byte) (info dto.DetourResponse) {
 	json.Unmarshal(response, &info)
 	return
 }
 
-func ConvertResponseLike(response []byte) (dto.MutationResponse) {
-	var info dto.LikeResponse
-	var status bool
-	json.Unmarshal(response, &info)
-	if info.Nice == 100 {
-		status = false
-	}else{
-		status = true
-	}
-	return dto.MutationResponse{Status: status}
+func ConvertResponseNice(response []byte)(info dto.NiceResponse) {
+	json.Unmarshal(response, &info.NiceInfo)
+	return
 }
 
 func ConvertResponseMutation(response []byte) (info dto.MutationResponse) {
@@ -44,13 +82,13 @@ func ConvertResponseMutation(response []byte) (info dto.MutationResponse) {
 }
 
 // type converter
-func ConvertSpotDtoToModel(d dto.SpotResponse) (*model.Spot) {
+func ConvertSpotDtoToModel(d dto.SpotResponse) *model.Spot {
 	return &model.Spot{
-		ID: d.Spot.ID,
+		ID:   d.Spot.ID,
 		Name: d.Spot.Name,
 		Locate: &model.Locate{
-			Latitude: d.Spot.Latitude,
-    		Longitude: d.Spot.Longitude,
+			Latitude:  d.Spot.Latitude,
+			Longitude: d.Spot.Longitude,
 		},
 	}
 }
@@ -60,12 +98,12 @@ func ConvertDetourDtoToModel(d dto.DetourResponse) (detour []*model.Detour) {
 		detour = append(
 			detour,
 			&model.Detour{
-				ID: v.ID,
-				Name: v.Name,
-				Image: v.Image,
+				ID:          v.ID,
+				Name:        v.Name,
+				Image:       v.Image,
 				Description: v.Description,
 				Locate: &model.Locate{
-					Latitude: v.Latitude,
+					Latitude:  v.Latitude,
 					Longitude: v.Longitude,
 				},
 			},

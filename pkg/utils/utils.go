@@ -21,6 +21,8 @@ func PackUserInfo(name string, year , month, day, gender int, genre ...string) (
 	}
 }
 
+
+
 func PackArticleHeaderInfo(id, title, image string, tag ...string) (*model.ArticleHeader) {
 	var tags []*string
 	for _, v := range tag {

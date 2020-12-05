@@ -1,11 +1,11 @@
 package resolver
 
-import(
+import (
 	"context"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
-	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
+	"github.com/miraikeitai2020/backend-bff/pkg/server/view"
 )
 
 func (r *mutationResolver) Signup(ctx context.Context) (*model.Token, error) {
@@ -51,7 +51,25 @@ func (r *mutationResolver) AddGenre(ctx context.Context, genre []*string) (*mode
 	return view.MakeResultResponse(true, errors), nil
 }
 
-func (r *mutationResolver) AddLike(ctx context.Context, articleid *string) (*model.Result, error) {
+func (r *mutationResolver) AddNice(ctx context.Context, articleid *string) (*model.Nice, error) {
+	header, errors := service.CreateHeaderLoader(ctx, "token")
+	if len(errors) > 0 {
+		return view.MakeNiceResponse(nil, errors), nil
+	}
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeNiceResponse(nil, service.MakeErrors(500, err)), nil
+	}
+	client := dao.MakeAddNiceClient(*articleid)
+	body, err := client.Request(claims.Load("sub"))
+	if err != nil {
+		return view.MakeNiceResponse(nil, service.MakeErrors(500, err)), nil
+	}
+	info := service.ConvertResponseNice(body)
+	return view.MakeNiceResponse(&info.NiceInfo, errors), nil
+}
+
+func (r *mutationResolver) AddList(ctx context.Context, articleid *string) (*model.Result, error) {
 	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
@@ -60,57 +78,83 @@ func (r *mutationResolver) AddLike(ctx context.Context, articleid *string) (*mod
 	if err != nil {
 		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
-
-	client := dao.MakeAddLikeClient(*articleid)
-	body, err := client.Request(claims.Load("sub"))
-	if err != nil {
+	client := dao.MakeAddListClient(*articleid)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
 		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
-	}
-
-	info := service.ConvertResponseLike(body)
-	return view.MakeResultResponse(info.Status, errors), nil
-}
-
-func (r *mutationResolver) AddList(ctx context.Context, articleid *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
-	if len(errors) > 0 {
-		return view.MakeResultResponse(false, errors), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
 }
 
 func (r *mutationResolver) DelList(ctx context.Context, articleid *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+	client := dao.MakeDelListClient(*articleid)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
 }
 
 func (r *mutationResolver) AddRequest(ctx context.Context, genre *string, year *int, month *int, title *string, contents *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.MakeAddRequestClient(*genre, *year, *month, *title, *contents)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
 }
 
 func (r *mutationResolver) AddComment(ctx context.Context, articleid *string, comment *string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.MakeAddCommentClient(*articleid, *comment)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil
 }
 
-func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date string, title string, worktime string, concentration string) (*model.Result, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
+func (r *mutationResolver) AddNewLogData(ctx context.Context, id string, date string, title string, worktime int, concentration []float64) (*model.Result, error) {
+	header, errors := service.CreateHeaderLoader(ctx, "token")
 	if len(errors) > 0 {
 		return view.MakeResultResponse(false, errors), nil
+	}
+
+	claims, err := service.VerifyToken(header["token"])
+	if err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
+	}
+
+	client := dao.NewAddLogClient(title, date, worktime, concentration)
+	if _, err = client.Request(claims.Load("sub")); err != nil {
+		return view.MakeResultResponse(false, service.MakeErrors(500, err)), nil
 	}
 
 	return view.MakeResultResponse(true, errors), nil

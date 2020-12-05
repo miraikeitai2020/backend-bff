@@ -12,16 +12,18 @@ type ArticleHeader struct {
 	Title     string    `json:"title"`
 	ImagePath string    `json:"ImagePath"`
 	Tags      []*string `json:"tags"`
+	Synopsis  string    `json:"synopsis"`
+	Nice      int       `json:"nice"`
 }
 
 type ArticleInfo struct {
-	ID         string           `json:"id"`
 	Title      string           `json:"title"`
 	ImagePath  string           `json:"imagePath"`
 	Nice       int              `json:"nice"`
 	Context    string           `json:"context"`
 	UserStatus *ArticleUserInfo `json:"userStatus"`
-	Comment    []*Comment       `json:"comment"`
+	Tags       []*string        `json:"tags"`
+	Comments   []*Comment       `json:"comments"`
 }
 
 type ArticleUserInfo struct {
@@ -35,9 +37,9 @@ type Articles struct {
 }
 
 type Comment struct {
-	Name    string `json:"name"`
-	Image   string `json:"image"`
-	Comment string `json:"comment"`
+	UserName  string `json:"userName"`
+	UserImage string `json:"userImage"`
+	Contents  string `json:"contents"`
 }
 
 type Date struct {
@@ -62,11 +64,6 @@ type Errors struct {
 
 type Genres struct {
 	Genres []string  `json:"genres"`
-	Errors []*Errors `json:"errors"`
-}
-
-type Like struct {
-	Status bool      `json:"status"`
 	Errors []*Errors `json:"errors"`
 }
 
@@ -101,6 +98,11 @@ type LogInfo struct {
 type Logs struct {
 	Logs   []*LogData `json:"logs"`
 	Errors []*Errors  `json:"errors"`
+}
+
+type Nice struct {
+	Nice   int       `json:"nice"`
+	Errors []*Errors `json:"errors"`
 }
 
 type Result struct {

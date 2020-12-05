@@ -1,6 +1,6 @@
 package view
 
-import(
+import (
 	errgen "errors"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
@@ -61,15 +61,15 @@ func MakeUserInfoResponse(info *model.User, errors []*model.Errors) (*model.User
 	}
 }
 
-func MakeLikeResponse(status bool, errors []*model.Errors) (*model.Like) {
+func MakeNiceResponse(nice *model.Nice, errors []*model.Errors) (*model.Nice) {
 	if len(errors) > 0 {
-		return &model.Like{
-			Status: false,
+		return &model.Nice{
+			Nice: nice.Nice,
 			Errors: errors,
 		}
 	}
-	return &model.Like{
-		Status: status,
+	return &model.Nice{
+		Nice: nice.Nice,
 		Errors: nil,
 	}
 }
