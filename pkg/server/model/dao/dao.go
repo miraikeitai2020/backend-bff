@@ -31,7 +31,7 @@ var (
 	AUTH_API_QUERY_SIGNIN    = "%s/query/signin"
 	AUTH_API_MUTATION_SIGNUP = "%s/mutation/signup"
 
-	RECORD_API_QUERY_ARTICLES     = "%s/read/articles"
+  RECORD_API_QUERY_ARTICLES     = "%s/read/articles"
 	RECORD_API_QUERY_TAG_ARTICLES = "%s/read/tag/articles"
 	RECORD_API_QUERY_ARTICLE      = "%s/read/article"
 	RECORD_API_MUTATION_LIKE      = "%s/update/add/like"

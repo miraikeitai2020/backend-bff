@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dto"
 )
