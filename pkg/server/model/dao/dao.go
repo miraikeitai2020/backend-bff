@@ -10,12 +10,12 @@ import (
 )
 
 type apiPath struct {
-	Auth       string `envconfig:"AUTH_API" default"https://my-backendauth.herokuapp.com"`
+	Auth       string `envconfig:"AUTH_API" default:""`
 	User       string `envconfig:"USER_API"`
-	Record     string `envconfig:"RECORD_API" default:"https://my-record.herokuapp.com"`
-	Memory     string `envconfig:"MEMORY_API" default:"https://backend-memory.herokuapp.com"`
-	Collection string `envconfig:"COLLECTION_API" default:"https://backend-collection.herokuapp.com"`
-	Log        string `envconfig:"LOG_API" default:"https://merihariko.herokuapp.com"`
+	Record     string `envconfig:"RECORD_API" default:""`
+	Memory     string `envconfig:"MEMORY_API" default:""`
+	Collection string `envconfig:"COLLECTION_API" default:""`
+	Log        string `envconfig:"LOG_API" default:""`
 	Spot       string `envconfig:"SPOT_API" default:""`
 	Evaluation string `envconfig:"EVALUATION_API" default:""`
 }
@@ -31,7 +31,7 @@ var (
 	AUTH_API_QUERY_SIGNIN    = "%s/query/signin"
 	AUTH_API_MUTATION_SIGNUP = "%s/mutation/signup"
 
-  RECORD_API_QUERY_ARTICLES     = "%s/read/articles"
+	RECORD_API_QUERY_ARTICLES     = "%s/read/articles"
 	RECORD_API_QUERY_TAG_ARTICLES = "%s/read/tag/articles"
 	RECORD_API_QUERY_ARTICLE      = "%s/read/article"
 	RECORD_API_MUTATION_LIKE      = "%s/update/add/like"
@@ -39,8 +39,8 @@ var (
 	MEMORY_API_MUTATION_COMMENT = "%s/create/comment"
 	MEMORY_API_MUTATION_REQUEST = "%s/create/request"
 
-	COLLECTION_API_QUERY_READLIST = "%s/read/list"
-	COLLECTION_API_QUERY_ADDLIST = "%s/create/list"
+	COLLECTION_API_QUERY_READLIST   = "%s/read/list"
+	COLLECTION_API_QUERY_ADDLIST    = "%s/create/list"
 	COLLECTION_API_QUERY_DELETELIST = "%s/delete/list"
 
 	LOG_API_QUERY_LOG  = "%s/api/log"
