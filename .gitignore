@@ -17,3 +17,5 @@
 
 *.rsa
 *.key
+
+.idea/
