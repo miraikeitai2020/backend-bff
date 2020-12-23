@@ -157,7 +157,6 @@ type Query {
     # Re:sns
     ## ユーザー情報取得
     userInfo: UserInfo!
-    nice(nice: Int): Nice!
     list: List!
     ## 記事取得
     genres: Genres!
