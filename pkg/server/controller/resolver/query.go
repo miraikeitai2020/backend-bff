@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"context"
+
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/dao"
 	"github.com/miraikeitai2020/backend-bff/pkg/server/model/service"
@@ -39,15 +40,6 @@ func (r *queryResolver) UserInfo(ctx context.Context) (*model.UserInfo, error) {
 		"政治",
 	)
 	return view.MakeUserInfoResponse(info, errors), nil
-}
-
-func (r *queryResolver) Nice(ctx context.Context, nice *int) (*model.Nice, error) {
-	_, errors := service.CreateHeaderLoader(ctx, "token")
-	if len(errors) > 0 {
-		return view.MakeNiceResponse(nil, errors), nil
-	}
-	info := utils.PackNiceData(nice)
-	return view.MakeNiceResponse(info, errors), nil
 }
 
 func (r *queryResolver) List(ctx context.Context) (*model.List, error) {
